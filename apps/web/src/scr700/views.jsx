@@ -147,7 +147,13 @@ function ProcessStation({ st, i, editorMode, asset, onEdit }) {
   );
 }
 
-function ProcessView({ theme = 'dark', editorMode = false }) {
+function ProcessView({ 
+  theme = 'dark', 
+  editorMode = false,
+  stationAssets = {},
+  onSaveStationAsset,
+  onResetStationAsset
+}) {
   // Determine background gradient based on theme
   const isDark = theme === 'dark';
   
@@ -163,42 +169,19 @@ function ProcessView({ theme = 'dark', editorMode = false }) {
   const metricsLabelColor = isDark ? '#64748b' : '#475569';
   const metricsThroughputColor = isDark ? '#67e8f9' : '#0e7490';
 
-  const [stationAssets, setStationAssets] = useState(() => {
-    const assets = {};
-    PROCESS_STATIONS.forEach((st) => {
-      if (typeof window !== 'undefined') {
-        const val = window.localStorage.getItem(`scr700-station-asset-${st.id}`);
-        if (val) {
-          try {
-            assets[st.id] = JSON.parse(val);
-          } catch (e) {
-            console.error(e);
-          }
-        }
-      }
-    });
-    return assets;
-  });
-
   const [editingStation, setEditingStation] = useState(null);
 
   const handleSaveAsset = (stationId, asset) => {
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem(`scr700-station-asset-${stationId}`, JSON.stringify(asset));
+    if (onSaveStationAsset) {
+      onSaveStationAsset(stationId, asset);
     }
-    setStationAssets((prev) => ({ ...prev, [stationId]: asset }));
     setEditingStation(null);
   };
 
   const handleResetAsset = (stationId) => {
-    if (typeof window !== 'undefined') {
-      window.localStorage.removeItem(`scr700-station-asset-${stationId}`);
+    if (onResetStationAsset) {
+      onResetStationAsset(stationId);
     }
-    setStationAssets((prev) => {
-      const copy = { ...prev };
-      delete copy[stationId];
-      return copy;
-    });
     setEditingStation(null);
   };
 
@@ -423,13 +406,25 @@ function InsightsPanel() {
   );
 }
 
-export function DashboardView({ theme = 'dark', editorMode = false }) {
+export function DashboardView({ 
+  theme = 'dark', 
+  editorMode = false, 
+  stationAssets = {}, 
+  onSaveStationAsset, 
+  onResetStationAsset 
+}) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-10 gap-2.5">
         {DASH_KPIS.map((k, i) => <DashKpiCard key={k.id} k={k} i={i} />)}
       </div>
-      <ProcessView theme={theme} editorMode={editorMode} />
+      <ProcessView 
+        theme={theme} 
+        editorMode={editorMode} 
+        stationAssets={stationAssets}
+        onSaveStationAsset={onSaveStationAsset}
+        onResetStationAsset={onResetStationAsset}
+      />
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
         <ProductionPanel />
         <QualityPanel />

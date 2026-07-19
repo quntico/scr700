@@ -16,6 +16,7 @@ import {
   ParametricsView, AlarmsView, MaintenanceView, EnergyView, ReportsView,
   PlantsView, UsersView, GenericView,
 } from './views';
+import { getSettings, setSetting, removeSetting } from '../utils/supabase/settings';
 
 const NAV = [
   { id: 'control', label: 'Centro de Control', icon: LayoutDashboard },
@@ -91,34 +92,97 @@ export default function Scr700App() {
     return val ? parseInt(val, 10) : 60;
   });
 
-  const handleSaveLogos = (dark, light, size) => {
+  const [stationAssets, setStationAssets] = useState(() => {
+    if (typeof window === 'undefined') return {};
+    const assets = {};
+    for (let i = 1; i <= 10; i++) {
+      const val = window.localStorage.getItem(`scr700-station-asset-${i}`);
+      if (val) {
+        try {
+          assets[i] = JSON.parse(val);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+    return assets;
+  });
+
+  // Load all settings asynchronously from Supabase on mount
+  useEffect(() => {
+    async function loadAllSettings() {
+      const settings = await getSettings();
+      if (settings['scr700-theme']) {
+        setTheme(settings['scr700-theme']);
+      }
+      if (settings['scr700-logo-dark']) {
+        setLogoDark(settings['scr700-logo-dark']);
+      }
+      if (settings['scr700-logo-light']) {
+        setLogoLight(settings['scr700-logo-light']);
+      }
+      if (settings['scr700-logo-size']) {
+        setLogoSize(parseInt(settings['scr700-logo-size'], 10) || 60);
+      }
+      
+      const assets = {};
+      for (let i = 1; i <= 10; i++) {
+        const val = settings[`scr700-station-asset-${i}`];
+        if (val) {
+          try {
+            assets[i] = JSON.parse(val);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+      setStationAssets(assets);
+    }
+    loadAllSettings();
+  }, []);
+
+  const handleSaveLogos = async (dark, light, size) => {
     setLogoDark(dark);
     setLogoLight(light);
     setLogoSize(size);
-    window.localStorage.setItem('scr700-logo-dark', dark);
-    window.localStorage.setItem('scr700-logo-light', light);
-    window.localStorage.setItem('scr700-logo-size', size.toString());
     setShowLogoModal(false);
+    
+    await setSetting('scr700-logo-dark', dark);
+    await setSetting('scr700-logo-light', light);
+    await setSetting('scr700-logo-size', size.toString());
   };
 
-  const handleResetLogos = () => {
+  const handleResetLogos = async () => {
     setLogoDark('');
     setLogoLight('');
     setLogoSize(60);
-    window.localStorage.removeItem('scr700-logo-dark');
-    window.localStorage.removeItem('scr700-logo-light');
-    window.localStorage.removeItem('scr700-logo-size');
     setShowLogoModal(false);
+
+    await removeSetting('scr700-logo-dark');
+    await removeSetting('scr700-logo-light');
+    await removeSetting('scr700-logo-size');
   };
 
   const currentLogo = theme === 'dark' ? logoDark : logoLight;
 
-  const toggleTheme = () => {
-    setTheme((t) => {
-      const next = t === 'dark' ? 'light' : 'dark';
-      if (typeof window !== 'undefined') window.localStorage.setItem('scr700-theme', next);
-      return next;
+  const toggleTheme = async () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    await setSetting('scr700-theme', next);
+  };
+
+  const handleSaveStationAsset = async (stationId, asset) => {
+    setStationAssets((prev) => ({ ...prev, [stationId]: asset }));
+    await setSetting(`scr700-station-asset-${stationId}`, JSON.stringify(asset));
+  };
+
+  const handleResetStationAsset = async (stationId) => {
+    setStationAssets((prev) => {
+      const copy = { ...prev };
+      delete copy[stationId];
+      return copy;
     });
+    await removeSetting(`scr700-station-asset-${stationId}`);
   };
 
   const activeAlarms = ALARMS.filter((a) => !a.ack).length;
@@ -126,7 +190,17 @@ export default function Scr700App() {
 
   const render = () => {
     switch (active) {
-      case 'control': return <DashboardView onSelectMachine={selectMachine} theme={theme} editorMode={editorMode} />;
+      case 'control': 
+        return (
+          <DashboardView 
+            onSelectMachine={selectMachine} 
+            theme={theme} 
+            editorMode={editorMode} 
+            stationAssets={stationAssets}
+            onSaveStationAsset={handleSaveStationAsset}
+            onResetStationAsset={handleResetStationAsset}
+          />
+        );
       case 'plants': return <PlantsView />;
       case 'machines': return <MachinesView onSelectMachine={selectMachine} />;
       case 'twin': return <TwinView onSelectMachine={selectMachine} selected={machine} />;
