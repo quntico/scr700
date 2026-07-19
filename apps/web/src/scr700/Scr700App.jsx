@@ -14,7 +14,7 @@ import MachinePanel from './MachinePanel';
 import {
   DashboardView, TwinView, MachinesView, AnalyticsView, IntelligenceView,
   ParametricsView, AlarmsView, MaintenanceView, EnergyView, ReportsView,
-  PlantsView, UsersView, GenericView,
+  PlantsView, UsersView, GenericView, CadSandboxOverlay
 } from './views';
 import { getSettings, setSetting, removeSetting } from '../utils/supabase/settings';
 
@@ -95,17 +95,31 @@ export default function Scr700App() {
   const [stationAssets, setStationAssets] = useState(() => {
     if (typeof window === 'undefined') return {};
     const assets = {};
-    for (let i = 1; i <= 10; i++) {
-      const val = window.localStorage.getItem(`scr700-station-asset-${i}`);
+    const ids = ['win', 's01', 's02', 's03', 's04', 's05', 'wout'];
+    for (const id of ids) {
+      const val = window.localStorage.getItem(`scr700-station-asset-${id}`);
       if (val) {
         try {
-          assets[i] = JSON.parse(val);
+          assets[id] = JSON.parse(val);
         } catch (e) {
           console.error(e);
         }
       }
     }
     return assets;
+  });
+
+  const [showSandbox, setShowSandbox] = useState(false);
+  const [studioSettings, setStudioSettings] = useState({
+    brightness: 40,
+    shadowAngle: 210,
+    metallic: 75,
+    roughness: 55,
+    silhouettes: 0,
+    floorStyle: 'grid',
+    gridOpacity: 100,
+    fog: 10,
+    backlight: true
   });
 
   // Load all settings asynchronously from Supabase on mount
@@ -124,13 +138,21 @@ export default function Scr700App() {
       if (settings['scr700-logo-size']) {
         setLogoSize(parseInt(settings['scr700-logo-size'], 10) || 128);
       }
+      if (settings['scr700-studio-settings']) {
+        try {
+          setStudioSettings(JSON.parse(settings['scr700-studio-settings']));
+        } catch (e) {
+          console.error(e);
+        }
+      }
       
       const assets = {};
-      for (let i = 1; i <= 10; i++) {
-        const val = settings[`scr700-station-asset-${i}`];
+      const ids = ['win', 's01', 's02', 's03', 's04', 's05', 'wout'];
+      for (const id of ids) {
+        const val = settings[`scr700-station-asset-${id}`];
         if (val) {
           try {
-            assets[i] = JSON.parse(val);
+            assets[id] = JSON.parse(val);
           } catch (e) {
             console.error(e);
           }
@@ -185,6 +207,21 @@ export default function Scr700App() {
     await removeSetting(`scr700-station-asset-${stationId}`);
   };
 
+  const handleSaveStudioSettings = async (settingsObj) => {
+    setStudioSettings(settingsObj);
+    await setSetting('scr700-studio-settings', JSON.stringify(settingsObj));
+  };
+
+  const handleResetAllAssets = async () => {
+    if (window.confirm("¿Seguro que deseas restablecer todos los modelos y configuraciones 3D a sus valores de fábrica?")) {
+      const ids = ['win', 's01', 's02', 's03', 's04', 's05', 'wout'];
+      setStationAssets({});
+      for (const id of ids) {
+        await removeSetting(`scr700-station-asset-${id}`);
+      }
+    }
+  };
+
   const activeAlarms = ALARMS.filter((a) => !a.ack).length;
   const selectMachine = (m) => setMachine(m);
 
@@ -199,6 +236,7 @@ export default function Scr700App() {
             stationAssets={stationAssets}
             onSaveStationAsset={handleSaveStationAsset}
             onResetStationAsset={handleResetStationAsset}
+            onOpenSandbox={() => setShowSandbox(true)}
           />
         );
       case 'plants': return <PlantsView />;
@@ -403,6 +441,15 @@ export default function Scr700App() {
         logoSize={logoSize}
         onSave={handleSaveLogos}
         onReset={handleResetLogos}
+      />
+
+      <CadSandboxOverlay
+        open={showSandbox}
+        onClose={() => setShowSandbox(false)}
+        stationAssets={stationAssets}
+        onResetAllAssets={handleResetAllAssets}
+        studioSettings={studioSettings}
+        onSaveStudioSettings={handleSaveStudioSettings}
       />
     </div>
   );

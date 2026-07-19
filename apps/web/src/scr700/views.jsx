@@ -12,6 +12,7 @@ import {
   Activity, Target, ShieldCheck, CheckCircle, Clock, OctagonX, ChevronDown,
   SlidersHorizontal, Maximize2,
   Edit, X, Image, FileCode,
+  Pause, RotateCcw, RefreshCw, Trash2, Camera, Video, Minimize2, Lightbulb,
 } from 'lucide-react';
 import {
   MACHINES, ALARMS, AI_RECS, PROD_SERIES, OEE_SERIES, ENERGY_SERIES,
@@ -208,7 +209,14 @@ function ProcessView({
             <span className="text-slate-500">Vista</span> Flujo de Proceso <ChevronDown size={13} className="text-slate-500" />
           </div>
           <button className="grid place-items-center h-8 w-8 rounded-lg text-slate-400 hover:text-slate-200" style={{ border: '1px solid var(--scr-border)' }}><SlidersHorizontal size={14} /></button>
-          <button className="grid place-items-center h-8 w-8 rounded-lg text-slate-400 hover:text-slate-200" style={{ border: '1px solid var(--scr-border)' }}><Maximize2 size={14} /></button>
+          <button 
+            onClick={onOpenSandbox}
+            className="grid place-items-center h-8 w-8 rounded-lg text-slate-400 hover:text-slate-200 active:scale-95 transition-all" 
+            style={{ border: '1px solid var(--scr-border)' }}
+            title="Abrir Visor CAD Sandbox"
+          >
+            <Maximize2 size={14} />
+          </button>
         </div>
       </header>
       <div className="relative" style={{ background: bgGradient }}>
@@ -418,7 +426,8 @@ export function DashboardView({
   editorMode = false, 
   stationAssets = {}, 
   onSaveStationAsset, 
-  onResetStationAsset 
+  onResetStationAsset,
+  onOpenSandbox
 }) {
   return (
     <div className="space-y-4">
@@ -431,6 +440,7 @@ export function DashboardView({
         stationAssets={stationAssets}
         onSaveStationAsset={onSaveStationAsset}
         onResetStationAsset={onResetStationAsset}
+        onOpenSandbox={onOpenSandbox}
       />
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
         <ProductionPanel />
@@ -1169,6 +1179,674 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
             </div>
           </div>
         </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+/* ---------------- CAD Studio Sandbox Mode (Twin Digital Activo) ---------------- */
+export function CadSandboxOverlay({
+  open,
+  onClose,
+  stationAssets,
+  onResetAllAssets,
+  studioSettings,
+  onSaveStudioSettings
+}) {
+  const [play, setPlay] = useState(true);
+  const [viewMode, setViewMode] = useState('isometric'); // isometric, lateral, superior
+  const [isRecording, setIsRecording] = useState(false);
+  const [recSeconds, setRecSeconds] = useState(0);
+  const [isReloading, setIsReloading] = useState(false);
+  const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, success
+
+  // Studio parameters
+  const [brightness, setBrightness] = useState(studioSettings?.brightness ?? 40);
+  const [shadowAngle, setShadowAngle] = useState(studioSettings?.shadowAngle ?? 210);
+  const [metallic, setMetallic] = useState(studioSettings?.metallic ?? 75);
+  const [roughness, setRoughness] = useState(studioSettings?.roughness ?? 55);
+  const [silhouettes, setSilhouettes] = useState(studioSettings?.silhouettes ?? 0);
+  const [floorStyle, setFloorStyle] = useState(studioSettings?.floorStyle ?? 'grid'); // grid, solid, reflective, none
+  const [gridOpacity, setGridOpacity] = useState(studioSettings?.gridOpacity ?? 100);
+  const [fog, setFog] = useState(studioSettings?.fog ?? 10);
+  const [backlight, setBacklight] = useState(studioSettings?.backlight ?? true);
+
+  // Load parent settings if they change
+  useEffect(() => {
+    if (studioSettings) {
+      setBrightness(studioSettings.brightness ?? 40);
+      setShadowAngle(studioSettings.shadowAngle ?? 210);
+      setMetallic(studioSettings.metallic ?? 75);
+      setRoughness(studioSettings.roughness ?? 55);
+      setSilhouettes(studioSettings.silhouettes ?? 0);
+      setFloorStyle(studioSettings.floorStyle ?? 'grid');
+      setGridOpacity(studioSettings.gridOpacity ?? 100);
+      setFog(studioSettings.fog ?? 10);
+      setBacklight(studioSettings.backlight ?? true);
+    }
+  }, [studioSettings, open]);
+
+  // REC Timer
+  useEffect(() => {
+    let interval;
+    if (isRecording) {
+      interval = setInterval(() => {
+        setRecSeconds((s) => s + 1);
+      }, 1000);
+    } else {
+      setRecSeconds(0);
+    }
+    return () => clearInterval(interval);
+  }, [isRecording]);
+
+  // Apply metallic & roughness properties on render
+  useEffect(() => {
+    if (!open) return;
+    const viewers = document.querySelectorAll('.sandbox-viewer');
+    viewers.forEach((v) => {
+      if (v.model) {
+        for (const material of v.model.materials) {
+          const pbr = material.pbrMetallicRoughness;
+          if (pbr) {
+            pbr.setMetallicFactor(metallic / 100);
+            pbr.setRoughnessFactor(roughness / 100);
+          }
+        }
+      }
+    });
+  }, [metallic, roughness, open, isReloading]);
+
+  if (!open) return null;
+
+  const formatRecTime = (totalSecs) => {
+    const mins = Math.floor(totalSecs / 60).toString().padStart(2, '0');
+    const secs = (totalSecs % 60).toString().padStart(2, '0');
+    return `${mins}:${secs}`;
+  };
+
+  const handleResetStudio = () => {
+    setBrightness(40);
+    setShadowAngle(210);
+    setMetallic(75);
+    setRoughness(55);
+    setSilhouettes(0);
+    setFloorStyle('grid');
+    setGridOpacity(100);
+    setFog(10);
+    setBacklight(true);
+    setViewMode('isometric');
+    setPlay(true);
+  };
+
+  const handleReload = () => {
+    setIsReloading(true);
+    setTimeout(() => {
+      setIsReloading(false);
+    }, 1000);
+  };
+
+  const handleSaveStudio = async () => {
+    setSaveStatus('saving');
+    if (onSaveStudioSettings) {
+      await onSaveStudioSettings({
+        brightness,
+        shadowAngle,
+        metallic,
+        roughness,
+        silhouettes,
+        floorStyle,
+        gridOpacity,
+        fog,
+        backlight
+      });
+    }
+    setSaveStatus('success');
+    setTimeout(() => setSaveStatus('idle'), 2000);
+  };
+
+  const handleDownloadCapture = async () => {
+    const firstViewer = document.querySelector('.sandbox-viewer');
+    if (firstViewer) {
+      try {
+        const blob = await firstViewer.toBlob({ mimeType: 'image/png' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'twin-digital-render.png';
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error("Error capturing canvas image:", err);
+      }
+    } else {
+      alert("No hay modelos 3D cargados en el visor para fotografiar.");
+    }
+  };
+
+  // Determine global 3D perspective variables based on viewMode
+  let floorTransform = '';
+  let elementTransform = '';
+
+  if (viewMode === 'isometric') {
+    floorTransform = 'rotateX(60deg) rotateZ(-15deg) translateY(-60px) scale(0.9)';
+    elementTransform = 'rotateX(-60deg) rotateY(0deg) rotateZ(15deg) translateY(-30px)';
+  } else if (viewMode === 'lateral') {
+    floorTransform = 'rotateX(86deg) rotateZ(0deg) translateY(-20px) scale(1)';
+    elementTransform = 'rotateX(-86deg) rotateY(0deg) rotateZ(0deg) translateY(-40px)';
+  } else if (viewMode === 'superior') {
+    floorTransform = 'rotateX(0deg) rotateZ(0deg) translateY(0px) scale(0.85)';
+    elementTransform = 'rotateX(0deg) rotateY(0deg) rotateZ(0deg)';
+  }
+
+  // Exposure mapping: 40% maps to 1.0, 100% to 2.5, etc.
+  const exposureVal = (brightness / 40) * 1.0;
+
+  // Filter effect mapping for silhouettes (contrast & outline feel)
+  const silhouetteStyle = silhouettes > 0 
+    ? `contrast(${1 + silhouettes / 50}) brightness(${1 - silhouettes / 200}) saturate(${1 - silhouettes / 100})`
+    : undefined;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[100] bg-[#03060a] text-slate-200 flex flex-col font-sans select-none overflow-hidden"
+      >
+        {/* Top Control Bar (TWIN DIGITAL ACTIVO) */}
+        <header className="h-16 border-b shrink-0 flex items-center justify-between px-4 bg-[#070c14]/90 backdrop-blur-md z-10" style={{ borderColor: 'var(--scr-border)' }}>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
+              </span>
+              <h2 className="scr-display font-black text-sm tracking-widest text-slate-50 uppercase">Twin Digital Activo</h2>
+            </div>
+
+            {/* Topbar Operations */}
+            <div className="flex items-center gap-1.5 bg-[#090f1a]/80 p-1 rounded-lg border border-slate-800">
+              <button
+                type="button"
+                onClick={() => setPlay(!play)}
+                title={play ? "Pausar Rotación" : "Activar Rotación"}
+                className="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-cyan-400 transition-colors"
+              >
+                {play ? <Pause size={14} /> : <Play size={14} />}
+              </button>
+              <button
+                type="button"
+                onClick={handleResetStudio}
+                title="Restablecer Cámara y Estudio"
+                className="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-cyan-400 transition-colors"
+              >
+                <RotateCcw size={14} />
+              </button>
+              <span className="w-px h-4 bg-slate-800" />
+
+              {/* Viewpoints */}
+              <div className="flex gap-1">
+                {['lateral', 'superior', 'isometric'].map((mode) => {
+                  const active = viewMode === mode;
+                  return (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setViewMode(mode)}
+                      className="px-2.5 py-1 rounded text-[10px] uppercase font-bold tracking-wider transition-all"
+                      style={{
+                        background: active ? 'rgba(34,211,238,0.12)' : 'transparent',
+                        color: active ? '#22d3ee' : 'var(--scr-text-400)',
+                        border: active ? '1px solid rgba(34,211,238,0.3)' : '1px solid transparent'
+                      }}
+                    >
+                      {mode === 'isometric' ? 'Isométrica' : mode}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <span className="w-px h-4 bg-slate-800" />
+              <button
+                type="button"
+                onClick={onResetAllAssets}
+                title="Limpiar Todos los Modelos Personalizados"
+                className="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-red-400 transition-colors"
+              >
+                <Trash2 size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={handleReload}
+                title="Actualizar Modelos"
+                className="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-cyan-400 transition-colors"
+              >
+                <RefreshCw size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setBacklight(!backlight)}
+                title="Filtro de Contraluz"
+                className="p-1.5 rounded hover:bg-slate-800 transition-colors"
+                style={{ color: backlight ? '#22d3ee' : '#64748b' }}
+              >
+                <Lightbulb size={14} />
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* Blinking REC Status */}
+            <button
+              type="button"
+              onClick={() => setIsRecording(!isRecording)}
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-xs font-bold transition-all"
+              style={{
+                borderColor: isRecording ? '#ef4444' : 'var(--scr-border)',
+                background: isRecording ? 'rgba(239,68,68,0.1)' : 'var(--scr-panel-2)',
+                color: isRecording ? '#ef4444' : 'var(--scr-text-300)'
+              }}
+            >
+              <span className={`h-2 w-2 rounded-full bg-red-500 ${isRecording ? 'animate-pulse' : ''}`} />
+              {isRecording ? `REC ${formatRecTime(recSeconds)}` : 'REC'}
+            </button>
+
+            {/* Exit Visor */}
+            <button
+              type="button"
+              onClick={onClose}
+              className="grid place-items-center h-8 w-8 rounded-lg text-slate-400 hover:text-slate-200 border border-slate-800 hover:bg-slate-900 transition-all active:scale-95"
+            >
+              <Minimize2 size={15} />
+            </button>
+          </div>
+        </header>
+
+        {/* Central Workspace area */}
+        <div className="flex-1 flex overflow-hidden relative">
+          <div className="flex-1 relative flex items-center justify-center p-8 bg-[#04070c]">
+            {/* Background Nebulas */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(34,211,238,0.03),transparent_40%),radial-gradient(circle_at_70%_80%,rgba(59,130,246,0.03),transparent_50%)] pointer-events-none" />
+
+            {/* Industrial Fog Overlay */}
+            {fog > 0 && (
+              <div 
+                className="absolute inset-0 pointer-events-none transition-opacity" 
+                style={{ 
+                  background: 'linear-gradient(to top, rgba(3,6,10,0.7) 0%, transparent 80%)',
+                  backdropFilter: `blur(${fog / 2}px)`,
+                  maskImage: 'linear-gradient(to top, black, transparent 60%)',
+                  opacity: fog / 20
+                }} 
+              />
+            )}
+
+            {isReloading ? (
+              <div className="flex flex-col items-center justify-center gap-3 animate-pulse">
+                <div className="h-10 w-10 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
+                <span className="text-xs scr-mono text-cyan-400 tracking-wider">REGENERANDO ESCENA CAD...</span>
+              </div>
+            ) : (
+              /* Perspective Sandbox Floor Wrapper */
+              <div 
+                className="sandbox-floor w-[95%] h-[90%] flex items-center justify-center" 
+                style={{ perspective: '1200px', perspectiveOrigin: '50% 30%' }}
+              >
+                {/* Rotatable Grid Floor */}
+                <div 
+                  className="sandbox-grid flex items-center justify-center gap-8 py-12 px-16 rounded-[40px] transition-all duration-700 ease-out"
+                  style={{
+                    transform: floorTransform,
+                    transformStyle: 'preserve-3d',
+                    minWidth: '95%',
+                    height: '520px',
+                    // Floor styles
+                    background: floorStyle === 'grid' || floorStyle === 'reflective' ? 'rgba(9,15,26,0.5)' : floorStyle === 'solid' ? '#101622' : 'transparent',
+                    border: floorStyle !== 'none' ? '1px dashed rgba(34,211,238,0.2)' : 'none',
+                    boxShadow: floorStyle === 'reflective' ? '0 25px 50px -12px rgba(34,211,238,0.05), inset 0 0 40px rgba(34,211,238,0.05)' : 'none'
+                  }}
+                >
+                  {/* Grid Lines Overlay */}
+                  {floorStyle === 'grid' && (
+                    <div 
+                      className="absolute inset-0 rounded-[40px] pointer-events-none"
+                      style={{
+                        opacity: gridOpacity / 100,
+                        backgroundImage: 'linear-gradient(rgba(34,211,238,0.07) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(34,211,238,0.07) 1.5px, transparent 1.5px)',
+                        backgroundSize: '36px 36px',
+                        maskImage: 'radial-gradient(circle, black, transparent 80%)'
+                      }}
+                    />
+                  )}
+
+                  {/* Reflection Mirror Overlay */}
+                  {floorStyle === 'reflective' && (
+                    <div className="absolute inset-0 rounded-[40px] bg-gradient-to-t from-cyan-900/10 to-transparent pointer-events-none" />
+                  )}
+
+                  {/* Render all stations sequentially */}
+                  {PROCESS_STATIONS.map((st, idx) => {
+                    const asset = stationAssets[st.id] || null;
+                    const isModel = asset && asset.type === 'model';
+                    const assetUrl = asset ? asset.value : null;
+                    const c = st.state === 'run' ? '#22c55e' : st.state === 'wait' ? '#f5c518' : '#64748b';
+
+                    return (
+                      <React.Fragment key={st.id}>
+                        {/* Connecting conveyor line */}
+                        {idx > 0 && (
+                          <div 
+                            className="w-10 h-1 border-t-2 border-dashed self-center opacity-60 shrink-0" 
+                            style={{ 
+                              borderColor: 'var(--scr-border)',
+                              transform: 'translateZ(10px)'
+                            }} 
+                          />
+                        )}
+
+                        {/* Station Standup Node */}
+                        <div 
+                          className="flex flex-col items-center relative transition-transform duration-700 ease-out"
+                          style={{ 
+                            transformStyle: 'preserve-3d',
+                            transform: elementTransform
+                          }}
+                        >
+                          {/* Holographic Glowing Platform */}
+                          <div 
+                            className="absolute bottom-1 w-28 h-10 rounded-full blur-[2px] transition-all"
+                            style={{
+                              background: `radial-gradient(ellipse at center, ${c}44, transparent 70%)`,
+                              transform: 'rotateX(75deg) translateZ(-4px)'
+                            }}
+                          />
+                          <div 
+                            className="absolute bottom-1 w-24 h-8 rounded-full border transition-all"
+                            style={{
+                              borderColor: `${c}66`,
+                              boxShadow: `0 0 10px ${c}33`,
+                              background: 'rgba(5,8,13,0.4)',
+                              transform: 'rotateX(75deg) translateZ(0px)'
+                            }}
+                          />
+
+                          {/* Model Viewport / Image billboard */}
+                          <div 
+                            className="relative w-36 h-36 flex items-center justify-center mb-6"
+                            style={{ 
+                              transform: 'translateZ(20px)',
+                              filter: silhouetteStyle 
+                            }}
+                          >
+                            {isModel && assetUrl ? (
+                              <model-viewer
+                                class="sandbox-viewer"
+                                src={assetUrl}
+                                alt={st.name}
+                                auto-rotate={play ? "" : undefined}
+                                camera-controls
+                                shadow-intensity="1"
+                                exposure={exposureVal}
+                                interaction-prompt="none"
+                                style={{ width: '136px', height: '136px', background: 'transparent' }}
+                              />
+                            ) : (
+                              <div className="relative group/billboard flex flex-col items-center">
+                                <img 
+                                  src={STATION_IMAGES[st.img]} 
+                                  alt={st.name} 
+                                  className="h-28 w-28 object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.6)]" 
+                                />
+                                <span className="absolute bottom-0 text-[8px] bg-slate-800/80 px-1.5 py-0.5 rounded text-slate-500 font-bold uppercase tracking-wider">2D CAD</span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Float Station Info Banner */}
+                          <div 
+                            className="px-2.5 py-1 rounded-md border text-center whitespace-nowrap bg-[#060b13]/90 backdrop-blur-sm shadow-lg shrink-0"
+                            style={{ 
+                              borderColor: 'var(--scr-border)',
+                              transform: 'translateZ(30px)' 
+                            }}
+                          >
+                            <span className="block text-[8px] text-slate-500 font-bold uppercase tracking-widest leading-none">
+                              {st.num ? `ST-${st.num}` : 'SYS'}
+                            </span>
+                            <span className="block text-[11px] font-bold text-slate-100 mt-0.5">
+                              {st.name.replace('\n', ' ')}
+                            </span>
+                          </div>
+                        </div>
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right Control Panel (ESTUDIO CAD PRO) */}
+          <aside className="w-80 border-l shrink-0 bg-[#060b12]/95 backdrop-blur-md p-4 overflow-y-auto flex flex-col gap-5 z-10" style={{ borderColor: 'var(--scr-border)' }}>
+            <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: 'var(--scr-border)' }}>
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal size={14} className="text-cyan-400" />
+                <h3 className="scr-display font-black text-xs uppercase tracking-wider text-slate-100">Estudio CAD Pro</h3>
+              </div>
+              <span className="text-[8px] bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-1.5 py-0.5 rounded font-black uppercase tracking-wider">Premium</span>
+            </div>
+
+            {/* Category: Iluminacion y Sombras */}
+            <div className="space-y-3">
+              <h4 className="text-[10px] font-bold tracking-widest text-slate-500 uppercase flex items-center gap-1.5">
+                <Sun size={12} className="text-slate-400" /> Iluminación y Sombras
+              </h4>
+
+              {/* Exposure Slider */}
+              <div className="space-y-1 bg-slate-900/40 p-2.5 rounded-lg border border-slate-800">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-400">Brillo e Iluminación</span>
+                  <span className="text-cyan-400 font-bold scr-mono">{brightness}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="10"
+                  max="120"
+                  value={brightness}
+                  onChange={(e) => setBrightness(parseInt(e.target.value))}
+                  className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                />
+              </div>
+
+              {/* Sun Angle Slider */}
+              <div className="space-y-1 bg-slate-900/40 p-2.5 rounded-lg border border-slate-800">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-400">Ángulo del Sol (Sombras)</span>
+                  <span className="text-cyan-400 font-bold scr-mono">{shadowAngle}°</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="360"
+                  value={shadowAngle}
+                  onChange={(e) => setShadowAngle(parseInt(e.target.value))}
+                  className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                />
+              </div>
+            </div>
+
+            {/* Category: Detalle y Acabado CAD */}
+            <div className="space-y-3">
+              <h4 className="text-[10px] font-bold tracking-widest text-slate-500 uppercase flex items-center gap-1.5">
+                <SlidersHorizontal size={12} className="text-slate-400" /> Detalle y Acabado CAD
+              </h4>
+
+              {/* Metallic factor */}
+              <div className="space-y-1 bg-slate-900/40 p-2.5 rounded-lg border border-slate-800">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-400">Brillo Metálico</span>
+                  <span className="text-cyan-400 font-bold scr-mono">{metallic}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={metallic}
+                  onChange={(e) => setMetallic(parseInt(e.target.value))}
+                  className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                />
+              </div>
+
+              {/* Roughness factor */}
+              <div className="space-y-1 bg-slate-900/40 p-2.5 rounded-lg border border-slate-800">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-400">Rugosidad / Pulido</span>
+                  <span className="text-cyan-400 font-bold scr-mono">{roughness}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={roughness}
+                  onChange={(e) => setRoughness(parseInt(e.target.value))}
+                  className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                />
+              </div>
+
+              {/* Silhouettes / outlines */}
+              <div className="space-y-1 bg-slate-900/40 p-2.5 rounded-lg border border-slate-800">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-400">Siluetas e Ingeniería</span>
+                  <span className="text-cyan-400 font-bold scr-mono">{silhouettes}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={silhouettes}
+                  onChange={(e) => setSilhouettes(parseInt(e.target.value))}
+                  className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                />
+              </div>
+            </div>
+
+            {/* Category: Entorno y Cuadricula */}
+            <div className="space-y-3">
+              <h4 className="text-[10px] font-bold tracking-widest text-slate-500 uppercase flex items-center gap-1.5">
+                <Layers size={12} className="text-slate-400" /> Entorno y Cuadrícula
+              </h4>
+
+              {/* Floor selector grids */}
+              <div className="grid grid-cols-2 gap-1.5">
+                {[
+                  { id: 'grid', label: 'Cuadrícula' },
+                  { id: 'solid', label: 'Piso Sólido' },
+                  { id: 'reflective', label: 'Reflectivo' },
+                  { id: 'none', label: 'Sin Piso' }
+                ].map((item) => {
+                  const selected = floorStyle === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setFloorStyle(item.id)}
+                      className="py-2 text-[10px] font-bold uppercase tracking-wider border rounded-lg transition-colors"
+                      style={{
+                        borderColor: selected ? '#22d3ee' : 'var(--scr-border)',
+                        background: selected ? 'rgba(34,211,238,0.1)' : 'var(--scr-panel-2)',
+                        color: selected ? '#22d3ee' : 'var(--scr-text-400)'
+                      }}
+                    >
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Grid line weight */}
+              {floorStyle === 'grid' && (
+                <div className="space-y-1 bg-slate-900/40 p-2.5 rounded-lg border border-slate-800">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-slate-400">Grosor/Visibilidad Cuadrícula</span>
+                    <span className="text-cyan-400 font-bold scr-mono">{gridOpacity}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="10"
+                    max="100"
+                    value={gridOpacity}
+                    onChange={(e) => setGridOpacity(parseInt(e.target.value))}
+                    className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                  />
+                </div>
+              )}
+
+              {/* Industrial Fog */}
+              <div className="space-y-1 bg-slate-900/40 p-2.5 rounded-lg border border-slate-800">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-400">Niebla Industrial (FOG)</span>
+                  <span className="text-cyan-400 font-bold scr-mono">{fog}</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="20"
+                  value={fog}
+                  onChange={(e) => setFog(parseInt(e.target.value))}
+                  className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                />
+              </div>
+
+              {/* Backlight toggle */}
+              <div className="flex items-center justify-between bg-slate-900/40 p-2.5 rounded-lg border border-slate-800 text-xs">
+                <span className="text-slate-400">Filtro de Contraluz</span>
+                <button
+                  type="button"
+                  onClick={() => setBacklight(!backlight)}
+                  className="w-9 h-5 rounded-full p-0.5 transition-colors relative duration-300"
+                  style={{ background: backlight ? '#22d3ee' : '#1e293b' }}
+                >
+                  <span 
+                    className="block w-4 h-4 rounded-full bg-slate-950 transition-transform duration-300"
+                    style={{ transform: backlight ? 'translateX(16px)' : 'translateX(0px)' }}
+                  />
+                </button>
+              </div>
+            </div>
+
+            {/* Actions Footer inside sidebar */}
+            <div className="mt-auto space-y-2.5 border-t pt-4" style={{ borderColor: 'var(--scr-border)' }}>
+              <button
+                type="button"
+                onClick={handleSaveStudio}
+                disabled={saveStatus !== 'idle'}
+                className="w-full py-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98] border"
+                style={{
+                  background: saveStatus === 'success' ? 'rgba(34,197,94,0.1)' : 'rgba(34,211,238,0.06)',
+                  borderColor: saveStatus === 'success' ? '#22c55e' : '#22d3ee',
+                  color: saveStatus === 'success' ? '#22c55e' : '#22d3ee'
+                }}
+              >
+                {saveStatus === 'saving' ? (
+                  <>Guardando...</>
+                ) : saveStatus === 'success' ? (
+                  <>Ajustes Guardados ✓</>
+                ) : (
+                  <>Guardar Ajustes de Estudio</>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDownloadCapture}
+                className="w-full py-2.5 rounded-lg text-xs font-bold text-[#05080d] bg-gradient-to-r from-cyan-400 to-blue-500 hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              >
+                <Camera size={13} /> Descargar Foto 3D
+              </button>
+            </div>
+          </aside>
+        </div>
       </motion.div>
     </AnimatePresence>
   );
