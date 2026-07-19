@@ -12,7 +12,7 @@ import {
   Activity, Target, ShieldCheck, CheckCircle, Clock, OctagonX, ChevronDown,
   SlidersHorizontal, Maximize2,
   Edit, X, Image, FileCode,
-  Pause, RotateCcw, RefreshCw, Trash2, Camera, Video, Minimize2, Lightbulb,
+  Pause, RotateCcw, RefreshCw, Trash2, Camera, Video, Minimize2, Lightbulb, Sun, Layers,
 } from 'lucide-react';
 import {
   MACHINES, ALARMS, AI_RECS, PROD_SERIES, OEE_SERIES, ENERGY_SERIES,
