@@ -114,14 +114,18 @@ function ProcessStation({ st, i, editorMode, asset, onEdit }) {
         />
         
         {isModel ? (
-          <model-viewer
-            src={assetUrl}
-            alt={st.name}
-            auto-rotate={rotate ? "" : undefined}
-            interaction-prompt="none"
-            style={{ width: '118px', height: '118px', background: 'transparent', filter: filterStyle }}
-            className="relative drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]"
-          />
+          <div
+            style={{ width: '118px', height: '118px', filter: filterStyle }}
+            className="relative drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] flex items-center justify-center"
+          >
+            <model-viewer
+              src={assetUrl}
+              alt={st.name}
+              auto-rotate={rotate ? "" : undefined}
+              interaction-prompt="none"
+              style={{ width: '118px', height: '118px', background: 'transparent' }}
+            />
+          </div>
         ) : (
           <img src={assetUrl} alt={st.name} style={{ filter: filterStyle }} className="relative h-[118px] w-[118px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]" />
         )}
@@ -1115,19 +1119,20 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
                       style={{ filter: (hasColorFilter && hueRotate) ? `hue-rotate(${hueRotate}deg)` : undefined }}
                     />
                   ) : (
-                    <model-viewer
-                      src={assetValue}
-                      alt="Preview 3D"
-                      auto-rotate={rotate ? "" : undefined}
-                      camera-controls
-                      interaction-prompt="none"
-                      style={{
-                        width: '130px',
-                        height: '130px',
-                        background: 'transparent',
-                        filter: (hasColorFilter && hueRotate) ? `hue-rotate(${hueRotate}deg)` : undefined
-                      }}
-                    />
+                    <div style={{ filter: (hasColorFilter && hueRotate) ? `hue-rotate(${hueRotate}deg)` : undefined }}>
+                      <model-viewer
+                        src={assetValue}
+                        alt="Preview 3D"
+                        auto-rotate={rotate ? "" : undefined}
+                        camera-controls
+                        interaction-prompt="none"
+                        style={{
+                          width: '130px',
+                          height: '130px',
+                          background: 'transparent'
+                        }}
+                      />
+                    </div>
                   )}
                 </div>
               </div>
