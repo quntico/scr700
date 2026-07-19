@@ -860,6 +860,7 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
   const [urlInput, setUrlInput] = useState(currentAsset?.value && !currentAsset.value.startsWith('data:') ? currentAsset.value : '');
   const [rotate, setRotate] = useState(currentAsset?.rotate !== false);
   const [hueRotate, setHueRotate] = useState(currentAsset?.hueRotate || 0);
+  const [hasColorFilter, setHasColorFilter] = useState(!!currentAsset?.hueRotate);
 
   // Reset local state if station changes
   React.useEffect(() => {
@@ -869,6 +870,7 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
       setUrlInput(currentAsset?.value && !currentAsset.value.startsWith('data:') ? currentAsset.value : '');
       setRotate(currentAsset?.rotate !== false);
       setHueRotate(currentAsset?.hueRotate || 0);
+      setHasColorFilter(!!currentAsset?.hueRotate);
     }
   }, [station, currentAsset]);
 
@@ -1035,34 +1037,69 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
               </div>
             )}
 
-            {/* Hue Rotate Slider for both image/model */}
-            <div className="space-y-2 border-t pt-4" style={{ borderColor: 'var(--scr-border)' }}>
-              <div className="flex justify-between items-center">
-                <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold">Filtro de Color (Matiz / Tonalidad)</label>
-                <span className="text-xs scr-mono text-cyan-400 font-bold">{hueRotate}°</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <input
-                  type="range"
-                  min="0"
-                  max="360"
-                  value={hueRotate}
-                  onChange={(e) => setHueRotate(parseInt(e.target.value))}
-                  className="flex-1 h-2 rounded-lg appearance-none cursor-pointer outline-none"
-                  style={{
-                    background: 'linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)'
+            {/* Color Filter Controls */}
+            <div className="space-y-3 border-t pt-4" style={{ borderColor: 'var(--scr-border)' }}>
+              <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold">Filtro de Color</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setHasColorFilter(false);
+                    setHueRotate(0);
                   }}
-                />
-                {hueRotate > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setHueRotate(0)}
-                    className="text-[10px] text-slate-500 hover:text-slate-300 uppercase font-bold"
-                  >
-                    Restablecer
-                  </button>
-                )}
+                  className="py-1.5 px-3 rounded-lg border text-xs font-semibold transition-colors"
+                  style={{
+                    borderColor: !hasColorFilter ? '#22d3ee' : 'var(--scr-border)',
+                    background: !hasColorFilter ? 'rgba(34,211,238,0.1)' : 'var(--scr-panel-2)',
+                    color: !hasColorFilter ? '#22d3ee' : 'var(--scr-text-300)'
+                  }}
+                >
+                  Colores Originales
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHasColorFilter(true)}
+                  className="py-1.5 px-3 rounded-lg border text-xs font-semibold transition-colors"
+                  style={{
+                    borderColor: hasColorFilter ? '#22d3ee' : 'var(--scr-border)',
+                    background: hasColorFilter ? 'rgba(34,211,238,0.1)' : 'var(--scr-panel-2)',
+                    color: hasColorFilter ? '#22d3ee' : 'var(--scr-text-300)'
+                  }}
+                >
+                  Tonalidad Personalizada
+                </button>
               </div>
+
+              {hasColorFilter && (
+                <div className="space-y-2 pt-2 animate-fadeIn">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[11px] text-slate-400 font-medium">Rotación de Matiz (Hue Rotate)</span>
+                    <span className="text-xs scr-mono text-cyan-400 font-bold">{hueRotate}°</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="range"
+                      min="0"
+                      max="360"
+                      value={hueRotate}
+                      onChange={(e) => setHueRotate(parseInt(e.target.value))}
+                      className="flex-1 h-2 rounded-lg appearance-none cursor-pointer outline-none"
+                      style={{
+                        background: 'linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)'
+                      }}
+                    />
+                    {hueRotate > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setHueRotate(0)}
+                        className="text-[10px] text-slate-500 hover:text-slate-300 uppercase font-bold"
+                      >
+                        Reset
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Preview Section */}
@@ -1075,7 +1112,7 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
                       src={assetValue}
                       alt="Preview"
                       className="max-h-[120px] object-contain rounded"
-                      style={{ filter: hueRotate ? `hue-rotate(${hueRotate}deg)` : undefined }}
+                      style={{ filter: (hasColorFilter && hueRotate) ? `hue-rotate(${hueRotate}deg)` : undefined }}
                     />
                   ) : (
                     <model-viewer
@@ -1088,7 +1125,7 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
                         width: '130px',
                         height: '130px',
                         background: 'transparent',
-                        filter: hueRotate ? `hue-rotate(${hueRotate}deg)` : undefined
+                        filter: (hasColorFilter && hueRotate) ? `hue-rotate(${hueRotate}deg)` : undefined
                       }}
                     />
                   )}
@@ -1117,7 +1154,7 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
               </button>
               <button
                 type="button"
-                onClick={() => onSave({ type: assetType, value: assetValue, rotate, hueRotate })}
+                onClick={() => onSave({ type: assetType, value: assetValue, rotate, hueRotate: hasColorFilter ? hueRotate : 0 })}
                 disabled={!assetValue}
                 className="rounded-lg text-xs font-semibold px-4 py-2 transition-all active:scale-[0.97] disabled:opacity-40"
                 style={{ background: 'linear-gradient(180deg,#22d3ee,#3b82f6)', color: '#05080d' }}
