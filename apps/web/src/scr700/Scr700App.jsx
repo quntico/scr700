@@ -79,17 +79,17 @@ export default function Scr700App() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showLogoModal, setShowLogoModal] = useState(false);
   const [logoDark, setLogoDark] = useState(() => {
-    if (typeof window === 'undefined') return '';
-    return window.localStorage.getItem('scr700-logo-dark') || '';
+    if (typeof window === 'undefined') return '/logo-dark.png';
+    return window.localStorage.getItem('scr700-logo-dark') || '/logo-dark.png';
   });
   const [logoLight, setLogoLight] = useState(() => {
-    if (typeof window === 'undefined') return '';
-    return window.localStorage.getItem('scr700-logo-light') || '';
+    if (typeof window === 'undefined') return '/logo-light.png';
+    return window.localStorage.getItem('scr700-logo-light') || '/logo-light.png';
   });
   const [logoSize, setLogoSize] = useState(() => {
-    if (typeof window === 'undefined') return 60;
+    if (typeof window === 'undefined') return 128;
     const val = window.localStorage.getItem('scr700-logo-size');
-    return val ? parseInt(val, 10) : 60;
+    return val ? parseInt(val, 10) : 128;
   });
 
   const [stationAssets, setStationAssets] = useState(() => {
@@ -122,7 +122,7 @@ export default function Scr700App() {
         setLogoLight(settings['scr700-logo-light']);
       }
       if (settings['scr700-logo-size']) {
-        setLogoSize(parseInt(settings['scr700-logo-size'], 10) || 60);
+        setLogoSize(parseInt(settings['scr700-logo-size'], 10) || 128);
       }
       
       const assets = {};
@@ -153,9 +153,9 @@ export default function Scr700App() {
   };
 
   const handleResetLogos = async () => {
-    setLogoDark('');
-    setLogoLight('');
-    setLogoSize(60);
+    setLogoDark('/logo-dark.png');
+    setLogoLight('/logo-light.png');
+    setLogoSize(128);
     setShowLogoModal(false);
 
     await removeSetting('scr700-logo-dark');
