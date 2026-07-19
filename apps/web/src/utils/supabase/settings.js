@@ -37,7 +37,11 @@ export async function getSettings() {
       data.forEach(row => {
         cloudData[row.key] = row.value;
         if (typeof window !== 'undefined') {
-          window.localStorage.setItem(row.key, row.value);
+          try {
+            window.localStorage.setItem(row.key, row.value);
+          } catch (localErr) {
+            console.warn(`Could not sync setting ${row.key} to localStorage (quota exceeded):`, localErr.message);
+          }
         }
       });
       return { ...localData, ...cloudData };
@@ -51,27 +55,36 @@ export async function getSettings() {
 
 export async function setSetting(key, value) {
   if (typeof window !== 'undefined') {
-    if (value === null || value === undefined) {
-      window.localStorage.removeItem(key);
-    } else {
-      window.localStorage.setItem(key, String(value));
+    try {
+      if (value === null || value === undefined) {
+        window.localStorage.removeItem(key);
+      } else {
+        window.localStorage.setItem(key, String(value));
+      }
+    } catch (localErr) {
+      console.warn(`LocalStorage write skipped for ${key} (quota exceeded):`, localErr.message);
     }
   }
 
   try {
+    let result;
     if (value === null || value === undefined) {
-      await supabase
+      result = await supabase
         .from('settings')
         .delete()
         .eq('key', key);
     } else {
-      await supabase
+      result = await supabase
         .from('settings')
         .upsert({ 
           key, 
           value: String(value), 
           updated_at: new Date().toISOString() 
         });
+    }
+
+    if (result && result.error) {
+      console.error(`Supabase database error saving setting ${key}:`, result.error.message);
     }
   } catch (err) {
     console.error(`Error saving setting ${key} to Supabase:`, err);
