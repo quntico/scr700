@@ -90,6 +90,9 @@ function ProcessStation({ st, i, editorMode, asset, onEdit }) {
   
   const isModel = asset && asset.type === 'model';
   const assetUrl = asset ? asset.value : STATION_IMAGES[st.img];
+  const rotate = asset ? asset.rotate !== false : true;
+  const hueRotate = asset ? asset.hueRotate || 0 : 0;
+  const filterStyle = hueRotate ? `hue-rotate(${hueRotate}deg)` : undefined;
 
   return (
     <motion.div
@@ -114,13 +117,13 @@ function ProcessStation({ st, i, editorMode, asset, onEdit }) {
           <model-viewer
             src={assetUrl}
             alt={st.name}
-            auto-rotate
+            auto-rotate={rotate ? "" : undefined}
             interaction-prompt="none"
-            style={{ width: '118px', height: '118px', background: 'transparent' }}
+            style={{ width: '118px', height: '118px', background: 'transparent', filter: filterStyle }}
             className="relative drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]"
           />
         ) : (
-          <img src={assetUrl} alt={st.name} className="relative h-[118px] w-[118px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]" />
+          <img src={assetUrl} alt={st.name} style={{ filter: filterStyle }} className="relative h-[118px] w-[118px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]" />
         )}
 
         {editorMode && (
@@ -855,6 +858,8 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
   const [assetType, setAssetType] = useState(currentAsset?.type || 'image');
   const [assetValue, setAssetValue] = useState(currentAsset?.value || '');
   const [urlInput, setUrlInput] = useState(currentAsset?.value && !currentAsset.value.startsWith('data:') ? currentAsset.value : '');
+  const [rotate, setRotate] = useState(currentAsset?.rotate !== false);
+  const [hueRotate, setHueRotate] = useState(currentAsset?.hueRotate || 0);
 
   // Reset local state if station changes
   React.useEffect(() => {
@@ -862,6 +867,8 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
       setAssetType(currentAsset?.type || 'image');
       setAssetValue(currentAsset?.value || '');
       setUrlInput(currentAsset?.value && !currentAsset.value.startsWith('data:') ? currentAsset.value : '');
+      setRotate(currentAsset?.rotate !== false);
+      setHueRotate(currentAsset?.hueRotate || 0);
     }
   }, [station, currentAsset]);
 
@@ -995,21 +1002,94 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
               </div>
             </div>
 
+            {/* Rotation Controls for Model */}
+            {assetType === 'model' && (
+              <div className="space-y-2 border-t pt-4" style={{ borderColor: 'var(--scr-border)' }}>
+                <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold">Rotación del Modelo</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setRotate(true)}
+                    className="py-1.5 px-3 rounded-lg border text-xs font-semibold transition-colors"
+                    style={{
+                      borderColor: rotate ? '#22d3ee' : 'var(--scr-border)',
+                      background: rotate ? 'rgba(34,211,238,0.1)' : 'var(--scr-panel-2)',
+                      color: rotate ? '#22d3ee' : 'var(--scr-text-300)'
+                    }}
+                  >
+                    Girar Automáticamente
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRotate(false)}
+                    className="py-1.5 px-3 rounded-lg border text-xs font-semibold transition-colors"
+                    style={{
+                      borderColor: !rotate ? '#22d3ee' : 'var(--scr-border)',
+                      background: !rotate ? 'rgba(34,211,238,0.1)' : 'var(--scr-panel-2)',
+                      color: !rotate ? '#22d3ee' : 'var(--scr-text-300)'
+                    }}
+                  >
+                    Estático
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Hue Rotate Slider for both image/model */}
+            <div className="space-y-2 border-t pt-4" style={{ borderColor: 'var(--scr-border)' }}>
+              <div className="flex justify-between items-center">
+                <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold">Filtro de Color (Matiz / Tonalidad)</label>
+                <span className="text-xs scr-mono text-cyan-400 font-bold">{hueRotate}°</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <input
+                  type="range"
+                  min="0"
+                  max="360"
+                  value={hueRotate}
+                  onChange={(e) => setHueRotate(parseInt(e.target.value))}
+                  className="flex-1 h-2 rounded-lg appearance-none cursor-pointer outline-none"
+                  style={{
+                    background: 'linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)'
+                  }}
+                />
+                {hueRotate > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setHueRotate(0)}
+                    className="text-[10px] text-slate-500 hover:text-slate-300 uppercase font-bold"
+                  >
+                    Restablecer
+                  </button>
+                )}
+              </div>
+            </div>
+
             {/* Preview Section */}
             {assetValue && (
               <div className="space-y-2 border-t pt-4" style={{ borderColor: 'var(--scr-border)' }}>
                 <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold">Vista Previa</label>
                 <div className="rounded-lg p-2 flex items-center justify-center bg-[#05080d]/60 border" style={{ borderColor: 'var(--scr-border)', minHeight: '140px' }}>
                   {assetType === 'image' ? (
-                    <img src={assetValue} alt="Preview" className="max-h-[120px] object-contain rounded" />
+                    <img
+                      src={assetValue}
+                      alt="Preview"
+                      className="max-h-[120px] object-contain rounded"
+                      style={{ filter: hueRotate ? `hue-rotate(${hueRotate}deg)` : undefined }}
+                    />
                   ) : (
                     <model-viewer
                       src={assetValue}
                       alt="Preview 3D"
-                      auto-rotate
+                      auto-rotate={rotate ? "" : undefined}
                       camera-controls
                       interaction-prompt="none"
-                      style={{ width: '130px', height: '130px', background: 'transparent' }}
+                      style={{
+                        width: '130px',
+                        height: '130px',
+                        background: 'transparent',
+                        filter: hueRotate ? `hue-rotate(${hueRotate}deg)` : undefined
+                      }}
                     />
                   )}
                 </div>
@@ -1037,7 +1117,7 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
               </button>
               <button
                 type="button"
-                onClick={() => onSave({ type: assetType, value: assetValue })}
+                onClick={() => onSave({ type: assetType, value: assetValue, rotate, hueRotate })}
                 disabled={!assetValue}
                 className="rounded-lg text-xs font-semibold px-4 py-2 transition-all active:scale-[0.97] disabled:opacity-40"
                 style={{ background: 'linear-gradient(180deg,#22d3ee,#3b82f6)', color: '#05080d' }}
