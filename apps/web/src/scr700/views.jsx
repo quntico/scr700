@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ResponsiveContainer, LineChart, Line, AreaChart, Area, BarChart, Bar,
@@ -160,7 +160,8 @@ function ProcessView({
   editorMode = false,
   stationAssets = {},
   onSaveStationAsset,
-  onResetStationAsset
+  onResetStationAsset,
+  onOpenSandbox
 }) {
   // Determine background gradient based on theme
   const isDark = theme === 'dark';

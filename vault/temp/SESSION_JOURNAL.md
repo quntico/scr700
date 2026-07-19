@@ -1426,3 +1426,90 @@
         at recoverFromConcurrentError (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:18786:28)
         at performSyncWorkOnRoot (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:18932:28)
 
+## 2026-07-19 22:46:39.077Z click
+- element: {"tag":"html","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":"\n\t\timport { injectIntoGlobalHook } from \"/@react-refresh\";\ninjectIntoGlobalHook(window);\nwindow.$RefreshReg$ = () => {};\nwindow.$RefreshSig$ = () => (type) => type;\n\n\t\t\n\n\t\t\n\t\t\n\t\t\n\t\t\n\t\tSCR700 — Inteligencia Industrial y Sistema de Control\n\t\t\n\t\tconst SITE_PAGES_ENDPOINT = '/__horizons/site-pages';\n\nconst OUTGOING_SITE_PAGES_MESSAGE = 'sitePages';\nconst INCOMING_REQUEST_SITE_PAGES_MESSAGE = 'request-site-pages';\n\nconst ALLOWED_PARENT_ORIGINS = [\n\t'https://horizons.hostinger.com',\n\t'https://horizons.hostinger.dev',\n\t'https://horizons-frontend-local.hostinger.dev',\n\t'http://localhost:4000',\n];\n\nfunction postSitePages(pages) {\n\tlet parentOrigin = window.location.ancestorOrigins?.[0];\n\tif (!parentOrigin && document.referrer) {\n\t\ttry {\n\t\t\tparentOrigin = new URL(document.referrer).origin;\n\t\t} catch {}\n\t}\n\tif (parentOrigin && ALLOWED_PARENT_ORIGINS.includes(parentOrigin)) {\n\t\twindow.parent.postMessage({ type: OUTGOING_SITE_PAGES_MESSAGE, payload: { pages } }, parentOrigin);\n\t}\n}\n\nasync function sendSitePagesToParent() {\n\tif (window.self === window.top) {\n\t\treturn;\n\t}\n\n\ttry {\n\t\tconst response = await fetch(SITE_PAGES_ENDPOINT);\n\t\tif (!response.ok) {\n\t\t\tthrow new Error(`HTTP ${response.status}`);\n\t\t}\n\t\tpostSitePages(await response.json());\n\t} catch (error) {\n\t\tconsole.error('[site-pages] Failed to send site pages to parent:', error);\n\t}\n}\n\nif (window.self !== window.top) {\n\twindow.addEventListener('load', sendSitePagesToParent);\n\twindow.addEventListener('message', (event) => {\n\t\tif (event.data?.type === INCOMING_REQUEST_SITE_PAGES_MESSAGE) {\n\t\t\tsendSitePagesToParent();\n\t\t}\n\t});\n}\n\n\t\t\n\t#root[data-edit-mode-enabled=\"true\"] {\n\t\tcursor: pointer;\n\t}\n\n\t#root[data-edit-mode-enabled=\"true\"] [data-edit-id] {\n\t\tcursor: pointer;\n\t\toutline: 2px dashed #357DF9;\n\t\toutline-offset: 2px;\n\t\tmin-height: 1em;\n\t\toverflow-wrap: anywhere;\n\t\tmin-width: 0;\n\t}\n\t#root[data-edit-mode-enabled=\"true\"] img[data-edit-id] {\n\t\toutline-offset: -2px;\n\t}\n\t#root[data-edit-mode-enabled=\"true\"] [data-edit-id]:hover {..."}
+
+## 2026-07-19 22:47:02.216Z window.error
+- message: Uncaught ReferenceError: onOpenSandbox is not defined
+- source: http://localhost:3000/src/scr700/views.jsx?t=1784501221105
+- line: 453
+- col: 22
+- stack: 
+    ReferenceError: onOpenSandbox is not defined
+        at ProcessView (http://localhost:3000/src/scr700/views.jsx?t=1784501221105:453:22)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:11596:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:14974:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:15962:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:3680:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:3705:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:3739:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:19818:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:19190:13)
+
+## 2026-07-19 22:47:02.258Z window.error
+- message: Uncaught ReferenceError: onOpenSandbox is not defined
+- source: http://localhost:3000/src/scr700/views.jsx?t=1784501221105
+- line: 453
+- col: 22
+- stack: 
+    ReferenceError: onOpenSandbox is not defined
+        at ProcessView (http://localhost:3000/src/scr700/views.jsx?t=1784501221105:453:22)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:11596:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:14974:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:15962:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:3680:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:3705:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:3739:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:19818:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:19190:13)
+
+## 2026-07-19 22:47:02.265Z console.error
+- text: 
+    The above error occurred in the <ProcessView> component:
+    
+        at ProcessView (http://localhost:3000/src/scr700/views.jsx?t=1784501221105:371:3)
+        at div
+        at DashboardView (http://localhost:3000/src/scr700/views.jsx?t=1784501221105:1103:3)
+        at div
+        at MotionComponent (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=680df6fc:946:40)
+        at PresenceChild (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=680df6fc:122:24)
+        at AnimatePresence (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=680df6fc:211:26)
+        at main
+        at div
+        at div
+        at Scr700App (http://localhost:3000/src/scr700/Scr700App.jsx?t=1784500994317:148:31)
+        at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=680df6fc:6401:26)
+        at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=680df6fc:7326:3)
+        at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=680df6fc:7265:13)
+        at BrowserRouter (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=680df6fc:10570:3)
+        at App
+    
+    Consider adding an error boundary to your tree to customize error handling behavior.
+    Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+## 2026-07-19 22:47:02.268Z unhandledrejection
+- message: onOpenSandbox is not defined
+- stack: 
+    ReferenceError: onOpenSandbox is not defined
+        at ProcessView (http://localhost:3000/src/scr700/views.jsx?t=1784501221105:453:22)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:11596:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:14974:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:15962:22)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:19806:22)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:19190:13)
+        at renderRootSync (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:19169:15)
+        at recoverFromConcurrentError (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:18786:28)
+        at performSyncWorkOnRoot (http://localhost:3000/node_modules/.vite/deps/chunk-POVVOG4E.js?v=16b4986a:18932:28)
+
+## 2026-07-19 22:47:12.867Z console.warn
+- text: Could not sync setting scr700-station-asset-1 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-1' exceeded the quota.
+
+## 2026-07-19 22:47:12.873Z console.warn
+- text: Could not sync setting scr700-station-asset-s01 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s01' exceeded the quota.
+
+## 2026-07-19 22:47:12.879Z console.warn
+- text: Could not sync setting scr700-station-asset-s02 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s02' exceeded the quota.
+
