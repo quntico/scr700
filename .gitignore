@@ -1,0 +1,38 @@
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# IDE / Editor configuration
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# Temporary files / environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.flash/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Git ignore files from model / agents
+.antigravity/
+.gemini/
+.tempmediaStorage/
+app.tar.gz
