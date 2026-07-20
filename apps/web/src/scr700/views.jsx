@@ -990,7 +990,8 @@ export function StationOperationDialog({ open, onClose, station, currentAsset, o
   const [feedLevel, setFeedLevel] = useState(72);
   const [amps, setAmps] = useState(122);
   const [isRunning, setIsRunning] = useState(true);
-  const [manualRotate, setManualRotate] = useState(false);
+  const [isAutoRotating, setIsAutoRotating] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const modelRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -1007,7 +1008,7 @@ export function StationOperationDialog({ open, onClose, station, currentAsset, o
   
   // Computations
   const computedProduction = isRunning ? (capacity * (speed / 100)).toFixed(1) : "0.0";
-  const rotationPerSecond = isRunning ? `${speed * 2}deg` : '0deg';
+  const rotationPerSecond = isAutoRotating ? `${speed * 2}deg` : '0deg';
   
   const handleSaveConfig = () => {
     if (onSave) {
@@ -1098,19 +1099,21 @@ export function StationOperationDialog({ open, onClose, station, currentAsset, o
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[360px]">
               
               {/* Left: 3D Model / Status (Span 6) */}
-              <div className="lg:col-span-6 rounded-xl border p-4 flex flex-col relative" style={{ borderColor: 'rgba(30,58,95,0.6)', background: 'rgba(5,8,13,0.5)' }}>
+              <div 
+                className={`${isFullscreen ? 'fixed inset-4 z-[200] bg-[#05080d] border border-cyan-500/30' : 'lg:col-span-6 border border-[#1e3a5f]/60 bg-[#05080d]/50'} rounded-xl p-4 flex flex-col relative transition-all duration-300`}
+              >
                 <h5 className="text-[10px] uppercase tracking-wider text-cyan-500 font-bold">ESTADO DE LA MÁQUINA</h5>
-                <div className="flex-1 relative mt-2 flex items-center justify-center min-h-[260px]">
+                <div className="flex-1 relative mt-2 flex items-center justify-center min-h-[260px] h-full">
                   <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/10 to-transparent pointer-events-none rounded-lg" />
                   {isModel ? (
                     <>
                       <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 bg-[#05080d]/90 p-1.5 rounded-lg border border-[#1e3a5f]/60 shadow-xl">
                         <button
-                          onClick={() => setManualRotate(!manualRotate)}
-                          className={`p-2 rounded-md transition-colors ${manualRotate || isRunning ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-400 hover:text-slate-200'}`}
-                          title="Girar Modelo"
+                          onClick={() => setIsAutoRotating(!isAutoRotating)}
+                          className={`p-2 rounded-md transition-colors ${isAutoRotating ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-400 hover:text-red-400'}`}
+                          title={isAutoRotating ? 'Detener Rotación' : 'Activar Rotación'}
                         >
-                          <RotateCw size={16} />
+                          {isAutoRotating ? <RotateCw size={16} /> : <X size={16} />}
                         </button>
                         <button
                           onClick={() => {
@@ -1123,12 +1126,19 @@ export function StationOperationDialog({ open, onClose, station, currentAsset, o
                         >
                           <Minimize2 size={16} />
                         </button>
+                        <button
+                          onClick={() => setIsFullscreen(!isFullscreen)}
+                          className={`p-2 rounded-md transition-colors ${isFullscreen ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-400 hover:text-cyan-400'}`}
+                          title="Pantalla Completa"
+                        >
+                          <Maximize2 size={16} />
+                        </button>
                       </div>
                       <model-viewer
                         ref={modelRef}
                         src={assetUrl}
                         alt={stationName}
-                        auto-rotate={isRunning || manualRotate ? "" : undefined}
+                        auto-rotate={isAutoRotating ? "" : undefined}
                         rotation-per-second={rotationPerSecond}
                         camera-controls
                         interaction-prompt="none"
