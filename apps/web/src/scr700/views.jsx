@@ -1008,7 +1008,9 @@ export function StationOperationDialog({ open, onClose, station, currentAsset, o
   
   // Computations
   const computedProduction = isRunning ? (capacity * (speed / 100)).toFixed(1) : "0.0";
-  const rotationPerSecond = isAutoRotating ? `${speed * 2}deg` : '0deg';
+  // Visual rotation capped at 10 RPM (10 * 360 / 60 = 60 deg/sec) to avoid dizzying effects
+  const visualRpm = Math.min(speed, 10);
+  const rotationPerSecond = isAutoRotating ? `${visualRpm * 6}deg` : '0deg';
   
   const handleSaveConfig = () => {
     if (onSave) {
@@ -1100,7 +1102,7 @@ export function StationOperationDialog({ open, onClose, station, currentAsset, o
               
               {/* Left: 3D Model / Status (Span 6) */}
               <div 
-                className={`${isFullscreen ? 'fixed inset-4 z-[200] bg-[#05080d] border border-cyan-500/30' : 'lg:col-span-6 border border-[#1e3a5f]/60 bg-[#05080d]/50'} rounded-xl p-4 flex flex-col relative transition-all duration-300`}
+                className={`${isFullscreen ? 'absolute inset-0 z-[200] bg-[#05080d] border border-cyan-500/50 rounded-xl' : 'lg:col-span-6 border border-[#1e3a5f]/60 bg-[#05080d]/50 rounded-xl'} p-4 flex flex-col relative transition-all duration-300`}
               >
                 <h5 className="text-[10px] uppercase tracking-wider text-cyan-500 font-bold">ESTADO DE LA MÁQUINA</h5>
                 <div className="flex-1 relative mt-2 flex items-center justify-center min-h-[260px] h-full">
