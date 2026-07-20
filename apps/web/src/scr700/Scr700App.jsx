@@ -14,8 +14,9 @@ import MachinePanel from './MachinePanel';
 import {
   DashboardView, TwinView, MachinesView, AnalyticsView, IntelligenceView,
   ParametricsView, AlarmsView, MaintenanceView, EnergyView, ReportsView,
-  PlantsView, UsersView, GenericView, CadSandboxOverlay
+  PlantsView, UsersView, GenericView
 } from './views';
+import { CadSandboxOverlay } from './CadSandboxViewer3D';
 import { getSettings, setSetting, removeSetting } from '../utils/supabase/settings';
 
 const NAV = [
@@ -208,8 +209,12 @@ export default function Scr700App() {
   };
 
   const handleSaveStudioSettings = async (settingsObj) => {
-    setStudioSettings(settingsObj);
-    await setSetting('scr700-studio-settings', JSON.stringify(settingsObj));
+    setStudioSettings((prev) => {
+      const merged = { ...prev, ...settingsObj };
+      // Save the merged settings asynchronously
+      setSetting('scr700-studio-settings', JSON.stringify(merged)).catch(console.error);
+      return merged;
+    });
   };
 
   const handleResetAllAssets = async () => {

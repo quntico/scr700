@@ -8,11 +8,11 @@ import {
 import {
   TrendingUp, TrendingDown, Play, RotateCw,
   UploadCloud, BellRing, Wrench, Box, FlaskConical, GitCompare, FileText,
-  Sparkles, CheckCircle2, XCircle, CalendarClock, Cpu, Gauge, Zap, Droplets,
+  Sparkles, CheckCircle2, XCircle, CalendarClock, Cpu, Gauge, Zap, Droplets, Wind,
   Activity, Target, ShieldCheck, CheckCircle, Clock, OctagonX, ChevronDown,
   SlidersHorizontal, Maximize2,
-  Edit, X, Image, FileCode,
-  Pause, RotateCcw, RefreshCw, Trash2, Camera, Video, Minimize2, Lightbulb, Sun, Layers,
+  Edit, X, Image, FileCode, Plus,
+  Pause, RotateCcw, RefreshCw, Trash2, Camera, Video, Minimize2, Lightbulb, Sun, Layers, Palette,
 } from 'lucide-react';
 import {
   MACHINES, ALARMS, AI_RECS, PROD_SERIES, OEE_SERIES, ENERGY_SERIES,
@@ -94,16 +94,22 @@ function ProcessStation({ st, i, editorMode, asset, onEdit }) {
   const rotate = asset ? asset.rotate !== false : true;
   const hueRotate = asset ? asset.hueRotate || 0 : 0;
   const filterStyle = hueRotate ? `hue-rotate(${hueRotate}deg)` : undefined;
+  
+  const tScale = asset?.metadata?.scale ?? 1;
+  const tX = asset?.metadata?.posX ?? 0;
+  const tY = asset?.metadata?.posY ?? 0;
+  const tZ = asset?.metadata?.posZ ?? 0;
+  const transformStyle = `translate3d(${tX}px, ${tY}px, ${tZ}px) scale(${tScale})`;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 + i * 0.06, duration: 0.4 }}
-      className={`relative flex flex-col items-center shrink-0 ${editorMode ? 'group cursor-pointer' : ''}`}
+      className="relative flex flex-col items-center shrink-0 group cursor-pointer"
       style={{ width: 150 }}
-      onClick={editorMode ? onEdit : undefined}
+      onClick={onEdit}
     >
-      <div className="relative h-[130px] w-[130px] grid place-items-center">
+      <div className="relative h-[130px] w-[130px] grid place-items-center" style={{ perspective: '1000px' }}>
         {/* glow platform */}
         <span
           className="absolute bottom-2 left-1/2 -translate-x-1/2"
@@ -116,38 +122,60 @@ function ProcessStation({ st, i, editorMode, asset, onEdit }) {
         
         {isModel ? (
           <div
-            style={{ width: '118px', height: '118px', filter: filterStyle }}
+            style={{ width: '118px', height: '118px', filter: filterStyle, transform: transformStyle, transition: 'transform 0.2s ease-out' }}
             className="relative drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] flex items-center justify-center"
           >
             <model-viewer
               src={assetUrl}
               alt={st.name}
-              auto-rotate={rotate ? "" : undefined}
+              shadow-intensity="1.2"
+              shadow-softness="0.6"
               interaction-prompt="none"
-              style={{ width: '118px', height: '118px', background: 'transparent' }}
+              camera-orbit="0deg 80deg 105%"
+              min-camera-orbit="0deg 80deg 105%"
+              max-camera-orbit="0deg 80deg 105%"
+              field-of-view="28deg"
+              disable-zoom
+              disable-pan
+              disable-tap
+              style={{ width: '118px', height: '118px', background: 'transparent', pointerEvents: 'none' }}
             />
           </div>
         ) : (
-          <img src={assetUrl} alt={st.name} style={{ filter: filterStyle }} className="relative h-[118px] w-[118px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]" />
+          <img src={assetUrl} alt={st.name} style={{ filter: filterStyle, transform: transformStyle, transition: 'transform 0.2s ease-out' }} className="relative h-[118px] w-[118px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]" />
         )}
 
-        {editorMode && (
-          <div className="absolute inset-0 bg-[#05080d]/60 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="bg-cyan-500 text-[#05080d] p-1.5 rounded-lg font-bold text-[10px] flex items-center gap-1 shadow-lg">
-              <Edit size={12} /> EDITAR
-            </div>
+        <div className="absolute inset-0 bg-[#05080d]/60 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="bg-cyan-500 text-[#05080d] p-1.5 rounded-lg font-bold text-[10px] flex items-center gap-1 shadow-lg">
+            {editorMode ? <><Edit size={12} /> EDITAR 3D / FICHA</> : <><Maximize2 size={12} /> VER EQUIPO</>}
           </div>
-        )}
+        </div>
       </div>
-      <div className="mt-1 text-center px-1">
-        <div className="flex items-center justify-center gap-1.5">
-          {st.num && <span className="scr-mono text-[12px] font-bold" style={{ color: c }}>{st.num}</span>}
-          <span className="scr-display text-[11px] font-semibold text-slate-200 whitespace-pre-line leading-tight">{st.name}</span>
+      <div className="mt-6 text-center px-1 flex flex-col items-center w-full">
+        <div className="flex items-start justify-center gap-1.5 min-h-[40px]">
+          {st.num && <span className="scr-mono text-[14px] font-bold" style={{ color: c, marginTop: '2px' }}>{st.num}</span>}
+          <span className="scr-display text-[13px] font-bold text-slate-100 whitespace-pre-line leading-tight max-w-[120px] drop-shadow-md">{asset?.metadata?.name || st.name}</span>
         </div>
         {meta && (
-          <div className="mt-1 flex items-center justify-center gap-1 text-[10px]" style={{ color: meta.color }}>
-            <span style={{ width: 6, height: 6, borderRadius: 99, background: meta.color, boxShadow: `0 0 6px ${meta.color}` }} />
+          <div className="mt-0 flex items-center justify-center gap-1.5 text-[11.5px] font-bold tracking-wide" style={{ color: meta.color }}>
+            <span style={{ width: 8, height: 8, borderRadius: 99, background: meta.color, boxShadow: `0 0 10px ${meta.color}` }} />
             {meta.label}
+          </div>
+        )}
+        {asset?.metadata && (
+          <div className="mt-3 flex flex-col items-center gap-2.5 border-t border-slate-700/60 pt-3 w-full">
+            {asset.metadata.capacityValue && (
+              <span className="text-[11px] text-slate-200 font-bold whitespace-nowrap bg-slate-800/90 px-3 py-1.5 rounded-lg border border-slate-600 shadow-lg">
+                Cap: <span className="text-cyan-400 font-bold scr-mono text-[13px]">{asset.metadata.capacityValue}</span> <span className="text-slate-400">{asset.metadata.capacityUnit || 'u/h'}</span>
+              </span>
+            )}
+            {(asset.metadata.power || asset.metadata.water || asset.metadata.air) && (
+              <div className="flex items-center gap-3 mt-0.5 bg-[#05080d]/90 px-3 py-2 rounded-full border border-[#1e3a5f]/60 shadow-lg">
+                {asset.metadata.power && <Zap size={14} className="text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.9)]" title="Energía Eléctrica" />}
+                {asset.metadata.water && <Droplets size={14} className="text-blue-400 drop-shadow-[0_0_6px_rgba(96,165,250,0.9)]" title="Agua" />}
+                {asset.metadata.air && <Wind size={14} className="text-slate-200 drop-shadow-[0_0_6px_rgba(203,213,225,0.9)]" title="Aire Comprimido" />}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -179,6 +207,30 @@ function ProcessView({
   const metricsThroughputColor = isDark ? '#67e8f9' : '#0e7490';
 
   const [editingStation, setEditingStation] = useState(null);
+  
+  const [activeStations, setActiveStations] = useState(() => {
+    try {
+      const saved = localStorage.getItem('scr700-active-stations');
+      if (saved) return JSON.parse(saved);
+    } catch(e) {}
+    return PROCESS_STATIONS;
+  });
+
+  const [stationSpacing, setStationSpacing] = useState(() => {
+    try {
+      const saved = localStorage.getItem('scr700-station-spacing');
+      if (saved) return parseInt(saved);
+    } catch(e) {}
+    return 34;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('scr700-active-stations', JSON.stringify(activeStations));
+  }, [activeStations]);
+
+  useEffect(() => {
+    localStorage.setItem('scr700-station-spacing', stationSpacing.toString());
+  }, [stationSpacing]);
 
   const handleSaveAsset = (stationId, asset) => {
     if (onSaveStationAsset) {
@@ -224,21 +276,75 @@ function ProcessView({
         {/* grid floor */}
         <div className="absolute inset-0 pointer-events-none opacity-40" style={{ backgroundImage: 'linear-gradient(rgba(34,211,238,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,0.06) 1px, transparent 1px)', backgroundSize: '46px 46px', maskImage: 'linear-gradient(180deg, transparent, black 40%, black)' }} />
         <div className="relative overflow-x-auto pt-6 pb-6 px-4">
-          <div className="flex items-center gap-1 min-w-max mx-auto w-fit">
-            {PROCESS_STATIONS.map((st, i) => (
-              <React.Fragment key={st.id}>
-                <ProcessStation
-                  st={st}
-                  i={i}
-                  editorMode={editorMode}
-                  asset={stationAssets[st.id]}
-                  onEdit={() => setEditingStation(st)}
+          {editorMode && (
+            <div className="flex justify-center mb-6 sticky left-0 right-0">
+              <div className="bg-[#05080d]/80 border border-[#1e3a5f] rounded-lg px-4 py-2 flex items-center gap-4 shadow-[0_0_15px_rgba(34,211,238,0.15)] backdrop-blur-md">
+                <span className="text-[10px] text-cyan-400 font-bold uppercase tracking-wider">Distancia entre equipos</span>
+                <input 
+                  type="range" min="0" max="300" step="5" value={stationSpacing} 
+                  onChange={e => setStationSpacing(parseInt(e.target.value))}
+                  className="w-48 h-1.5 bg-slate-800 rounded-full appearance-none outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-cyan-400 [&::-webkit-slider-thumb]:rounded-full cursor-pointer"
                 />
-                {i < PROCESS_STATIONS.length - 1 && (
-                  <svg width="34" height="4" className="shrink-0 -mt-6"><line x1="0" y1="2" x2="34" y2="2" stroke="#22d3ee" strokeWidth="2" className="scr-flow" opacity="0.7" /></svg>
+                <span className="text-[10px] text-slate-300 font-mono w-8">{stationSpacing}px</span>
+              </div>
+            </div>
+          )}
+          <div className="flex items-start gap-1 min-w-max mx-auto w-fit">
+            {activeStations.map((st, i) => (
+              <React.Fragment key={st.id}>
+                <div className="relative group/station">
+                  <ProcessStation
+                    st={st}
+                    i={i}
+                    editorMode={editorMode}
+                    asset={stationAssets[st.id]}
+                    onEdit={() => setEditingStation(st)}
+                  />
+                  {editorMode && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setActiveStations(activeStations.filter(s => s.id !== st.id)); }}
+                      className="absolute -top-2 -right-2 bg-red-500/20 text-red-400 p-1.5 rounded-full opacity-0 group-hover/station:opacity-100 transition-opacity hover:bg-red-500 hover:text-white z-50 shadow-lg border border-red-500/50"
+                      title="Ocultar Estación"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+                {i < activeStations.length - 1 && (
+                  <svg width={stationSpacing} height="16" className="shrink-0 mt-[101px] overflow-visible">
+                    <line x1="0" y1="8" x2={stationSpacing} y2="8" stroke="#0891b2" strokeWidth="1.5" opacity="0.6" />
+                    {stationSpacing >= 30 && (
+                      <g transform={`translate(${stationSpacing / 2}, 8)`} style={{ filter: 'drop-shadow(0 0 5px #22d3ee)' }}>
+                        <motion.g
+                          initial={{ x: -15, opacity: 0 }}
+                          animate={{ x: 15, opacity: [0, 1, 1, 0] }}
+                          transition={{ repeat: Infinity, duration: 1.5, ease: 'linear' }}
+                        >
+                          <polyline points="-12,-5 -5,0 -12,5" fill="none" stroke="#22d3ee" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <polyline points="-3,-5 4,0 -3,5" fill="none" stroke="#22d3ee" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <polyline points="6,-5 13,0 6,5" fill="none" stroke="#22d3ee" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </motion.g>
+                      </g>
+                    )}
+                  </svg>
                 )}
               </React.Fragment>
             ))}
+            {editorMode && (
+               <div className="flex items-start ml-2 h-[130px] items-center">
+                 <button
+                   onClick={() => {
+                     const newId = 's' + Date.now();
+                     const num = activeStations.length > 0 ? String(activeStations.length).padStart(2, '0') : '01';
+                     setActiveStations([...activeStations, { id: newId, num, name: 'Nueva Estación', img: 'feeder', state: 'run' }]);
+                   }}
+                   className="h-[80px] w-12 rounded-xl border border-dashed border-cyan-500/40 flex items-center justify-center text-cyan-500 hover:bg-cyan-500/10 hover:border-cyan-400 transition-all cursor-pointer"
+                   title="Agregar Estación"
+                 >
+                   <div className="bg-cyan-500/20 p-2 rounded-full"><Plus size={16} /></div>
+                 </button>
+               </div>
+            )}
           </div>
         </div>
         {/* metrics panel — below the process visualization, non-overlapping */}
@@ -270,6 +376,7 @@ function ProcessView({
         currentAsset={editingStation ? stationAssets[editingStation.id] : null}
         onSave={(asset) => handleSaveAsset(editingStation.id, asset)}
         onReset={() => handleResetAsset(editingStation.id)}
+        editorMode={editorMode}
       />
     </Panel>
   );
@@ -869,13 +976,343 @@ export function GenericView({ title, desc }) {
   );
 }
 
-export function StationAssetEditorDialog({ open, onClose, station, currentAsset, onSave, onReset }) {
+export function StationOperationDialog({ open, onClose, station, currentAsset, onSave }) {
+  const assetUrl = currentAsset ? currentAsset.value : STATION_IMAGES[station?.img];
+  const isModel = currentAsset && currentAsset.type === 'model';
+  const filterStyle = (currentAsset && currentAsset.hueRotate) ? `hue-rotate(${currentAsset.hueRotate}deg)` : undefined;
+  
+  const initialCap = currentAsset?.metadata?.capacityValue ? parseFloat(currentAsset.metadata.capacityValue.toString().replace(/,/g,'')) : 950;
+  const initialUnit = currentAsset?.metadata?.capacityUnit || 'kg/h';
+  
+  const [speed, setSpeed] = useState(72);
+  const [capacity, setCapacity] = useState(initialCap);
+  const [unit, setUnit] = useState(initialUnit);
+  const [feedLevel, setFeedLevel] = useState(72);
+  const [amps, setAmps] = useState(122);
+  const [isRunning, setIsRunning] = useState(true);
+  const [manualRotate, setManualRotate] = useState(false);
+  const modelRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [onClose]);
+
+  if (!open || !station) return null;
+
+  const stationName = currentAsset?.metadata?.name || station.name;
+  
+  // Computations
+  const computedProduction = isRunning ? (capacity * (speed / 100)).toFixed(1) : "0.0";
+  const rotationPerSecond = isRunning ? `${speed * 2}deg` : '0deg';
+  
+  const handleSaveConfig = () => {
+    if (onSave) {
+      onSave({
+        ...currentAsset,
+        metadata: {
+          ...currentAsset?.metadata,
+          capacityValue: capacity.toString(),
+          capacityUnit: unit
+        }
+      });
+    }
+  };
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+        style={{ background: 'rgba(3, 6, 12, 0.6)', backdropFilter: 'blur(8px)' }}
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.98, opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+          onClick={(e) => e.stopPropagation()}
+          className="w-full max-w-[1200px] h-[90vh] max-h-[800px] rounded-xl border flex flex-col overflow-hidden shadow-2xl relative"
+          style={{ 
+             background: 'linear-gradient(180deg, rgba(7, 12, 20, 0.9), rgba(4, 7, 12, 0.95))',
+             borderColor: 'rgba(34, 211, 238, 0.3)',
+             boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1), 0 24px 48px rgba(0,0,0,0.8)'
+          }}
+        >
+          {/* Header */}
+          <div className="flex-none px-6 py-4 flex items-center justify-between border-b" style={{ borderColor: 'rgba(34,211,238,0.2)' }}>
+            <div className="flex items-center gap-4">
+              <div className="rounded-lg p-2.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                <Gauge size={24} />
+              </div>
+              <div>
+                <h4 className="scr-display font-bold text-lg text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.4)] uppercase">
+                  PANEL DE OPERACIÓN — {stationName}
+                </h4>
+                <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">Configuración operativa interactiva y simulación en tiempo real</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex flex-col items-end mr-4">
+                <span className="flex items-center gap-1.5 text-xs text-emerald-400 font-semibold"><span className="w-2 h-2 rounded-full bg-emerald-500 scr-blink" /> Conectado</span>
+                <span className="text-[10px] text-slate-500 scr-mono">SYS-ONLINE</span>
+              </div>
+              <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors bg-[#05080d] p-2 rounded-md border border-[#1e3a5f]/50"><X size={20} /></button>
+            </div>
+          </div>
+
+          {/* Body */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            
+            {/* KPI Row */}
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+              {[
+                ['PRODUCCIÓN', computedProduction, unit, Activity, '#22d3ee'],
+                ['CARGA MOTOR', isRunning ? '68' : '0', '%', Gauge, '#3b82f6'],
+                ['VELOCIDAD', isRunning ? speed.toString() : '0', 'rpm', RotateCw, '#22c55e'],
+                ['TORQUE', isRunning ? '1,250' : '0', 'Nm', Target, '#f5c518'],
+                ['PRESIÓN', isRunning ? '118' : '0', 'bar', Droplets, '#3b82f6'],
+                ['TEMP.', isRunning ? '54' : '22', '°C', Lightbulb, '#ef4444'],
+                ['CONSUMO', isRunning ? '125.6' : '1.2', 'kW', Zap, '#a855f7'],
+                ['ALARMAS', '0', 'activas', BellRing, '#22c55e'],
+              ].map(([l, v, u, Ic, c], idx) => (
+                <div key={idx} className="rounded-lg border p-3 flex flex-col relative overflow-hidden" style={{ borderColor: 'rgba(30,58,95,0.6)', background: 'rgba(5,8,13,0.5)' }}>
+                  <div className="flex items-center justify-between text-[9px] uppercase tracking-wider text-slate-400 font-bold">
+                    {l}
+                    <Ic size={12} color={c} opacity={0.8} />
+                  </div>
+                  <div className="mt-1 flex items-baseline gap-1">
+                    <span className="scr-display font-bold text-xl text-slate-100">{v}</span>
+                    <span className="text-[10px] text-slate-500 font-medium">{u}</span>
+                  </div>
+                  {/* Fake sparkline */}
+                  <div className="absolute bottom-0 left-0 right-0 h-4 opacity-30">
+                    <svg width="100%" height="100%" preserveAspectRatio="none"><path d={`M0,15 L10,12 L20,14 L30,5 L40,8 L50,14 L60,10 L70,12 L80,6 L90,10 L100,${isRunning ? '15' : '15'}`} fill="none" stroke={c} strokeWidth="1.5" /></svg>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[360px]">
+              
+              {/* Left: 3D Model / Status (Span 6) */}
+              <div className="lg:col-span-6 rounded-xl border p-4 flex flex-col relative" style={{ borderColor: 'rgba(30,58,95,0.6)', background: 'rgba(5,8,13,0.5)' }}>
+                <h5 className="text-[10px] uppercase tracking-wider text-cyan-500 font-bold">ESTADO DE LA MÁQUINA</h5>
+                <div className="flex-1 relative mt-2 flex items-center justify-center min-h-[260px]">
+                  <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/10 to-transparent pointer-events-none rounded-lg" />
+                  {isModel ? (
+                    <>
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 bg-[#05080d]/90 p-1.5 rounded-lg border border-[#1e3a5f]/60 shadow-xl">
+                        <button
+                          onClick={() => setManualRotate(!manualRotate)}
+                          className={`p-2 rounded-md transition-colors ${manualRotate || isRunning ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-400 hover:text-slate-200'}`}
+                          title="Girar Modelo"
+                        >
+                          <RotateCw size={16} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (modelRef.current) {
+                              modelRef.current.cameraOrbit = "0deg 80deg 105%";
+                            }
+                          }}
+                          className="p-2 rounded-md text-slate-400 hover:text-cyan-400 transition-colors"
+                          title="Regresar a vista original"
+                        >
+                          <Minimize2 size={16} />
+                        </button>
+                      </div>
+                      <model-viewer
+                        ref={modelRef}
+                        src={assetUrl}
+                        alt={stationName}
+                        auto-rotate={isRunning || manualRotate ? "" : undefined}
+                        rotation-per-second={rotationPerSecond}
+                        camera-controls
+                        interaction-prompt="none"
+                        style={{ width: '100%', height: '100%', background: 'transparent', filter: filterStyle }}
+                      />
+                    </>
+                  ) : (
+                    <img src={assetUrl} alt={stationName} className="max-h-full object-contain" style={{ filter: filterStyle }} />
+                  )}
+                  
+                  {/* Overlay tags for effect */}
+                  <div className="absolute top-2 left-2 bg-[#05080d]/80 border border-[#1e3a5f] p-2 rounded-lg backdrop-blur-sm shadow-xl">
+                    <div className="text-[9px] text-slate-400 font-bold uppercase">ALIMENTACIÓN</div>
+                    <div className="text-xs text-cyan-400 font-bold mt-0.5">Nivel: {feedLevel}%</div>
+                  </div>
+                  <div className="absolute bottom-4 right-2 bg-[#05080d]/80 border border-[#1e3a5f] p-2 rounded-lg backdrop-blur-sm shadow-xl">
+                    <div className="text-[9px] text-slate-400 font-bold uppercase">SALIDA</div>
+                    <div className={`text-xs font-bold mt-0.5 ${isRunning ? 'text-emerald-400' : 'text-slate-500'}`}>{isRunning ? 'Flujo: OK' : 'DETENIDO'}</div>
+                  </div>
+                </div>
+                
+                <div className="mt-4 flex items-center justify-between border-t pt-3" style={{ borderColor: 'rgba(30,58,95,0.4)' }}>
+                  <div className="flex items-center gap-2">
+                    {isRunning ? <CheckCircle size={16} className="text-emerald-400" /> : <OctagonX size={16} className="text-red-400" />}
+                    <div>
+                      <div className="text-[9px] text-slate-500 uppercase">ESTADO GENERAL</div>
+                      <div className={`text-xs font-bold uppercase ${isRunning ? 'text-emerald-400' : 'text-red-400'}`}>{isRunning ? 'OPERANDO NORMALMENTE' : 'PARO SOLICITADO'}</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[9px] text-slate-500 uppercase">HORAS TOTALES</div>
+                    <div className="text-xs text-slate-200 font-bold">1,256 h</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Middle: Controls (Span 3) */}
+              <div className="lg:col-span-3 rounded-xl border p-4 flex flex-col space-y-4" style={{ borderColor: 'rgba(30,58,95,0.6)', background: 'rgba(5,8,13,0.5)' }}>
+                <h5 className="text-[10px] uppercase tracking-wider text-cyan-500 font-bold">CONTROLES DE OPERACIÓN</h5>
+                <div className="grid grid-cols-2 gap-3 mt-2">
+                  <button 
+                    onClick={() => setIsRunning(true)}
+                    className="flex flex-col items-center justify-center p-4 rounded-lg border transition-all active:scale-95 shadow-inner" 
+                    style={{ borderColor: isRunning ? 'rgba(34,197,94,0.8)' : 'rgba(34,197,94,0.3)', background: isRunning ? 'rgba(34,197,94,0.15)' : 'rgba(5,8,13,0.6)' }}
+                  >
+                    <Play size={24} className={`mb-2 ${isRunning ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]' : 'text-emerald-700'}`} />
+                    <span className={`text-[10px] font-bold uppercase tracking-wider ${isRunning ? 'text-emerald-400' : 'text-emerald-700'}`}>MARCHA</span>
+                  </button>
+                  <button 
+                    onClick={() => setIsRunning(false)}
+                    className="flex flex-col items-center justify-center p-4 rounded-lg border transition-all active:scale-95 shadow-inner" 
+                    style={{ borderColor: !isRunning ? 'rgba(239,68,68,0.8)' : 'rgba(239,68,68,0.3)', background: !isRunning ? 'rgba(239,68,68,0.15)' : 'rgba(5,8,13,0.6)' }}
+                  >
+                    <div className={`w-5 h-5 rounded-sm mb-2 ${!isRunning ? 'bg-red-400 shadow-[0_0_8px_rgba(239,68,68,0.8)]' : 'bg-red-900'}`} />
+                    <span className={`text-[10px] font-bold uppercase tracking-wider ${!isRunning ? 'text-red-400' : 'text-red-800'}`}>PARO</span>
+                  </button>
+                </div>
+                <button 
+                  onClick={() => setIsRunning(false)}
+                  className="flex items-center justify-center gap-2 p-3 rounded-lg border transition-all hover:bg-red-500/20 active:scale-95 w-full shadow-inner" 
+                  style={{ borderColor: 'rgba(239,68,68,0.6)', background: 'rgba(239,68,68,0.15)' }}
+                >
+                  <OctagonX size={16} className="text-red-500" />
+                  <span className="text-xs font-bold text-red-500 uppercase tracking-widest">PARO DE EMERGENCIA</span>
+                </button>
+
+                <div className="grid grid-cols-2 gap-2 mt-auto">
+                  <button className="flex flex-col items-center justify-center p-3 rounded-lg border transition-all" style={{ borderColor: '#22d3ee', background: 'rgba(34,211,238,0.15)' }}>
+                    <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">AUTO</span>
+                  </button>
+                  <button className="flex flex-col items-center justify-center p-3 rounded-lg border transition-all hover:bg-slate-800" style={{ borderColor: 'rgba(30,58,95,0.5)', background: 'rgba(5,8,13,0.6)' }}>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">MANUAL</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Right: Parameters (Span 3) */}
+              <div className="lg:col-span-3 rounded-xl border p-4 flex flex-col space-y-4" style={{ borderColor: 'rgba(30,58,95,0.6)', background: 'rgba(5,8,13,0.5)' }}>
+                <h5 className="text-[10px] uppercase tracking-wider text-cyan-500 font-bold flex justify-between items-center">
+                  <span>PARÁMETROS OPERATIVOS</span>
+                  <button onClick={handleSaveConfig} className="text-[9px] bg-cyan-500/20 border border-cyan-500/50 text-cyan-300 px-2 py-1 rounded hover:bg-cyan-500/30 transition-colors">Guardar Base</button>
+                </h5>
+                
+                <div className="space-y-4 mt-2 flex-1">
+                  
+                  {/* Speed Slider */}
+                  <div>
+                    <div className="flex justify-between items-end mb-1">
+                      <span className="text-[10px] text-slate-400">Velocidad del rotor</span>
+                      <span className="text-xs font-bold text-cyan-300">{speed} <span className="text-[9px] text-slate-500 font-normal">rpm</span></span>
+                    </div>
+                    <input 
+                      type="range" min="10" max="100" value={speed} onChange={(e) => setSpeed(parseInt(e.target.value))}
+                      className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-cyan-400 [&::-webkit-slider-thumb]:rounded-full"
+                      style={{ background: `linear-gradient(to right, #06b6d4 ${speed}%, #1e293b ${speed}%)` }}
+                    />
+                    <div className="flex justify-between mt-1 text-[8px] text-slate-600"><span>10</span><span>100</span></div>
+                  </div>
+
+                  {/* Capacity Slider & Unit Selector */}
+                  <div>
+                    <div className="flex justify-between items-end mb-1">
+                      <span className="text-[10px] text-slate-400">Capacidad Base</span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-xs font-bold text-cyan-300">{capacity}</span>
+                        <select 
+                          value={unit} onChange={(e) => setUnit(e.target.value)} 
+                          className="text-[9px] bg-[#05080d] text-slate-300 border border-[#1e3a5f] rounded outline-none"
+                        >
+                          <option value="kg/h">kg/h</option>
+                          <option value="m/min">m/min</option>
+                          <option value="u/h">u/h</option>
+                          <option value="ppm">PPM</option>
+                        </select>
+                      </div>
+                    </div>
+                    <input 
+                      type="range" min="100" max="2500" value={capacity} onChange={(e) => setCapacity(parseInt(e.target.value))}
+                      className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-cyan-400 [&::-webkit-slider-thumb]:rounded-full"
+                      style={{ background: `linear-gradient(to right, #06b6d4 ${(capacity/2500)*100}%, #1e293b ${(capacity/2500)*100}%)` }}
+                    />
+                    <div className="flex justify-between mt-1 text-[8px] text-slate-600"><span>100</span><span>2500</span></div>
+                  </div>
+
+                  {/* Feed Level Slider */}
+                  <div>
+                    <div className="flex justify-between items-end mb-1">
+                      <span className="text-[10px] text-slate-400">Nivel de alimentación</span>
+                      <span className="text-xs font-bold text-cyan-300">{feedLevel} <span className="text-[9px] text-slate-500 font-normal">%</span></span>
+                    </div>
+                    <input 
+                      type="range" min="0" max="100" value={feedLevel} onChange={(e) => setFeedLevel(parseInt(e.target.value))}
+                      className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-cyan-400 [&::-webkit-slider-thumb]:rounded-full"
+                      style={{ background: `linear-gradient(to right, #06b6d4 ${feedLevel}%, #1e293b ${feedLevel}%)` }}
+                    />
+                    <div className="flex justify-between mt-1 text-[8px] text-slate-600"><span>0</span><span>100</span></div>
+                  </div>
+
+                  {/* Amps Level Slider */}
+                  <div>
+                    <div className="flex justify-between items-end mb-1">
+                      <span className="text-[10px] text-slate-400">Amperaje Motor</span>
+                      <span className="text-xs font-bold text-cyan-300">{amps} <span className="text-[9px] text-slate-500 font-normal">A</span></span>
+                    </div>
+                    <input 
+                      type="range" min="0" max="250" value={amps} onChange={(e) => setAmps(parseInt(e.target.value))}
+                      className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-cyan-400 [&::-webkit-slider-thumb]:rounded-full"
+                      style={{ background: `linear-gradient(to right, #06b6d4 ${(amps/250)*100}%, #1e293b ${(amps/250)*100}%)` }}
+                    />
+                    <div className="flex justify-between mt-1 text-[8px] text-slate-600"><span>0</span><span>250</span></div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+export function StationAssetEditorDialog({ open, onClose, station, currentAsset, onSave, onReset, editorMode }) {
+  if (!editorMode) {
+    return <StationOperationDialog open={open} onClose={onClose} station={station} currentAsset={currentAsset} onSave={onSave} />;
+  }
   const [assetType, setAssetType] = useState(currentAsset?.type || 'image');
   const [assetValue, setAssetValue] = useState(currentAsset?.value || '');
   const [urlInput, setUrlInput] = useState(currentAsset?.value && !currentAsset.value.startsWith('data:') ? currentAsset.value : '');
   const [rotate, setRotate] = useState(currentAsset?.rotate !== false);
   const [hueRotate, setHueRotate] = useState(currentAsset?.hueRotate || 0);
   const [hasColorFilter, setHasColorFilter] = useState(!!currentAsset?.hueRotate);
+
+  const [stationName, setStationName] = useState(currentAsset?.metadata?.name || station?.name || '');
+  const [capacityValue, setCapacityValue] = useState(currentAsset?.metadata?.capacityValue || '');
+  const [capacityUnit, setCapacityUnit] = useState(currentAsset?.metadata?.capacityUnit || 'u/h');
+  const [reqPower, setReqPower] = useState(currentAsset?.metadata?.power || false);
+  const [reqWater, setReqWater] = useState(currentAsset?.metadata?.water || false);
+  const [reqAir, setReqAir] = useState(currentAsset?.metadata?.air || false);
+  
+  const [modelScale, setModelScale] = useState(currentAsset?.metadata?.scale ?? 1);
+  const [posX, setPosX] = useState(currentAsset?.metadata?.posX ?? 0);
+  const [posY, setPosY] = useState(currentAsset?.metadata?.posY ?? 0);
+  const [posZ, setPosZ] = useState(currentAsset?.metadata?.posZ ?? 0);
 
   // Reset local state if station changes
   React.useEffect(() => {
@@ -886,8 +1323,28 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
       setRotate(currentAsset?.rotate !== false);
       setHueRotate(currentAsset?.hueRotate || 0);
       setHasColorFilter(!!currentAsset?.hueRotate);
+      
+      setStationName(currentAsset?.metadata?.name || station?.name || '');
+      setCapacityValue(currentAsset?.metadata?.capacityValue || '');
+      setCapacityUnit(currentAsset?.metadata?.capacityUnit || 'u/h');
+      setReqPower(currentAsset?.metadata?.power || false);
+      setReqWater(currentAsset?.metadata?.water || false);
+      setReqAir(currentAsset?.metadata?.air || false);
+      
+      setModelScale(currentAsset?.metadata?.scale ?? 1);
+      setPosX(currentAsset?.metadata?.posX ?? 0);
+      setPosY(currentAsset?.metadata?.posY ?? 0);
+      setPosZ(currentAsset?.metadata?.posZ ?? 0);
     }
   }, [station, currentAsset]);
+
+  React.useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [onClose]);
 
   if (!open || !station) return null;
 
@@ -913,7 +1370,7 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
     <AnimatePresence>
       <motion.div
         className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-        style={{ background: 'rgba(3,6,12,0.75)', backdropFilter: 'blur(4px)' }}
+        style={{ background: 'rgba(5, 8, 13, 0.4)', backdropFilter: 'blur(16px)' }}
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         onClick={onClose}
       >
@@ -921,237 +1378,265 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
           initial={{ scale: 0.94, y: 12 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 320, damping: 26 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-lg rounded-xl border p-6 text-slate-200"
-          style={{ background: 'var(--scr-panel)', borderColor: 'var(--scr-border)' }}
+          className="w-full max-w-4xl rounded-xl border p-6 text-slate-200 shadow-2xl"
+          style={{ 
+             background: 'rgba(7, 12, 20, 0.45)',
+             borderColor: 'rgba(34, 211, 238, 0.3)',
+             boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1), inset 1px 0 0 rgba(255,255,255,0.05), 0 24px 48px rgba(0,0,0,0.8)'
+          }}
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: 'var(--scr-border)' }}>
+          <div className="flex items-center justify-between border-b pb-4 mb-5" style={{ borderColor: 'rgba(34,211,238,0.2)' }}>
             <div className="flex items-center gap-3">
-              <div className="rounded-lg p-2 bg-cyan-500/10 text-cyan-400">
-                <Edit size={20} />
+              <div className="rounded-lg p-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 shadow-[0_0_12px_rgba(34,211,238,0.2)]">
+                <SlidersHorizontal size={20} />
               </div>
               <div>
-                <h4 className="scr-display font-bold text-base text-slate-50">Editar Estación: {station.name}</h4>
-                <p className="text-slate-400 text-xs font-medium">Sube una imagen 2D o un modelo 3D (.glb) para esta estación.</p>
+                <h4 className="scr-display font-bold text-base text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]">PANEL DE CONTROL — {station.name}</h4>
+                <p className="text-slate-400 text-xs font-medium">Configuración operativa, velocidad y recursos visuales.</p>
               </div>
             </div>
-            <button onClick={onClose} className="text-slate-400 hover:text-slate-200 transition-colors"><X size={18} /></button>
+            <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors bg-[#05080d]/60 p-1.5 rounded-md border border-[#1e3a5f]/50"><X size={18} /></button>
           </div>
 
-          <div className="mt-5 space-y-6">
-            {/* Asset Type Selector */}
-            <div className="space-y-2">
-              <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold">Tipo de Recurso</label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => { setAssetType('image'); setAssetValue(''); setUrlInput(''); }}
-                  className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg border text-xs font-semibold transition-colors"
-                  style={{
-                    borderColor: assetType === 'image' ? '#22d3ee' : 'var(--scr-border)',
-                    background: assetType === 'image' ? 'rgba(34,211,238,0.1)' : 'var(--scr-panel-2)',
-                    color: assetType === 'image' ? '#22d3ee' : 'var(--scr-text-300)'
-                  }}
-                >
-                  <Image size={14} /> Imagen 2D
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setAssetType('model'); setAssetValue(''); setUrlInput(''); }}
-                  className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg border text-xs font-semibold transition-colors"
-                  style={{
-                    borderColor: assetType === 'model' ? '#22d3ee' : 'var(--scr-border)',
-                    background: assetType === 'model' ? 'rgba(34,211,238,0.1)' : 'var(--scr-panel-2)',
-                    color: assetType === 'model' ? '#22d3ee' : 'var(--scr-text-300)'
-                  }}
-                >
-                  <FileCode size={14} /> Modelo 3D (.glb)
-                </button>
-              </div>
-            </div>
-
-            {/* Asset Input: File or URL */}
-            <div className="space-y-3">
-              <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold font-medium">
-                {assetType === 'image' ? 'Cargar Imagen' : 'Cargar Modelo .glb'}
-              </label>
-              
-              {/* File Input */}
-              <div className="flex items-center gap-3">
-                <input
-                  type="file"
-                  id="station-file-upload"
-                  accept={assetType === 'image' ? 'image/*' : '.glb'}
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-                <label
-                  htmlFor="station-file-upload"
-                  className="flex items-center justify-center gap-2 border border-dashed rounded-lg py-4 px-4 text-xs font-medium cursor-pointer hover:border-cyan-500 hover:bg-cyan-500/5 transition-all text-slate-400 flex-1 text-center"
-                  style={{ borderColor: 'var(--scr-border)' }}
-                >
-                  <UploadCloud size={16} className="text-cyan-400" />
-                  {assetValue.startsWith('data:') ? '¡Archivo cargado con éxito!' : `Seleccionar archivo ${assetType === 'image' ? 'de imagen' : '3D (.glb)'}`}
-                </label>
-              </div>
-
-              {/* URL Input */}
-              <div className="space-y-1.5">
-                <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">O usar una URL directa</div>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={urlInput}
-                    onChange={(e) => setUrlInput(e.target.value)}
-                    placeholder={assetType === 'image' ? 'https://ejemplo.com/imagen.png' : 'https://ejemplo.com/modelo.glb'}
-                    className="flex-1 rounded-lg border text-slate-200 text-xs p-2 outline-none focus:border-cyan-500"
-                    style={{ borderColor: 'var(--scr-border)', background: 'var(--scr-panel-2)' }}
-                  />
-                  <button
-                    type="button"
-                    onClick={handleApplyUrl}
-                    className="px-3 rounded-lg text-xs font-semibold bg-[#05080d] hover:bg-slate-800 transition-colors border"
-                    style={{ borderColor: 'var(--scr-border)', color: 'var(--scr-text-200)' }}
-                  >
-                    Aplicar
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Rotation Controls for Model */}
-            {assetType === 'model' && (
-              <div className="space-y-2 border-t pt-4" style={{ borderColor: 'var(--scr-border)' }}>
-                <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold">Rotación del Modelo</label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* LEFT COL: VISUALS */}
+            <div className="space-y-6">
+              {/* Asset Type Selector */}
+              <div className="space-y-2">
+                <label className="block text-xs uppercase tracking-wider text-cyan-500 font-bold">Tipo de Recurso</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
-                    onClick={() => setRotate(true)}
-                    className="py-1.5 px-3 rounded-lg border text-xs font-semibold transition-colors"
+                    onClick={() => { setAssetType('image'); setAssetValue(''); setUrlInput(''); }}
+                    className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg border text-xs font-semibold transition-colors shadow-inner"
                     style={{
-                      borderColor: rotate ? '#22d3ee' : 'var(--scr-border)',
-                      background: rotate ? 'rgba(34,211,238,0.1)' : 'var(--scr-panel-2)',
-                      color: rotate ? '#22d3ee' : 'var(--scr-text-300)'
+                      borderColor: assetType === 'image' ? '#22d3ee' : 'rgba(30,58,95,0.5)',
+                      background: assetType === 'image' ? 'rgba(34,211,238,0.15)' : 'rgba(5,8,13,0.6)',
+                      color: assetType === 'image' ? '#22d3ee' : '#cbd5e1'
                     }}
                   >
-                    Girar Automáticamente
+                    <Image size={14} /> Imagen 2D
                   </button>
                   <button
                     type="button"
-                    onClick={() => setRotate(false)}
-                    className="py-1.5 px-3 rounded-lg border text-xs font-semibold transition-colors"
+                    onClick={() => { setAssetType('model'); setAssetValue(''); setUrlInput(''); }}
+                    className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg border text-xs font-semibold transition-colors shadow-inner"
                     style={{
-                      borderColor: !rotate ? '#22d3ee' : 'var(--scr-border)',
-                      background: !rotate ? 'rgba(34,211,238,0.1)' : 'var(--scr-panel-2)',
-                      color: !rotate ? '#22d3ee' : 'var(--scr-text-300)'
+                      borderColor: assetType === 'model' ? '#22d3ee' : 'rgba(30,58,95,0.5)',
+                      background: assetType === 'model' ? 'rgba(34,211,238,0.15)' : 'rgba(5,8,13,0.6)',
+                      color: assetType === 'model' ? '#22d3ee' : '#cbd5e1'
                     }}
                   >
-                    Estático
+                    <FileCode size={14} /> Modelo 3D (.glb)
                   </button>
                 </div>
               </div>
-            )}
 
-            {/* Color Filter Controls */}
-            <div className="space-y-3 border-t pt-4" style={{ borderColor: 'var(--scr-border)' }}>
-              <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold">Filtro de Color</label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setHasColorFilter(false);
-                    setHueRotate(0);
-                  }}
-                  className="py-1.5 px-3 rounded-lg border text-xs font-semibold transition-colors"
-                  style={{
-                    borderColor: !hasColorFilter ? '#22d3ee' : 'var(--scr-border)',
-                    background: !hasColorFilter ? 'rgba(34,211,238,0.1)' : 'var(--scr-panel-2)',
-                    color: !hasColorFilter ? '#22d3ee' : 'var(--scr-text-300)'
-                  }}
-                >
-                  Colores Originales
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setHasColorFilter(true)}
-                  className="py-1.5 px-3 rounded-lg border text-xs font-semibold transition-colors"
-                  style={{
-                    borderColor: hasColorFilter ? '#22d3ee' : 'var(--scr-border)',
-                    background: hasColorFilter ? 'rgba(34,211,238,0.1)' : 'var(--scr-panel-2)',
-                    color: hasColorFilter ? '#22d3ee' : 'var(--scr-text-300)'
-                  }}
-                >
-                  Tonalidad Personalizada
-                </button>
+              {/* Asset Input: File or URL */}
+              <div className="space-y-3">
+                <label className="block text-xs uppercase tracking-wider text-cyan-500 font-bold">
+                  {assetType === 'image' ? 'Cargar Imagen' : 'Cargar Modelo .glb'}
+                </label>
+                
+                {/* File Input */}
+                <div className="flex items-center gap-3">
+                  <input
+                    type="file"
+                    id="station-file-upload"
+                    accept={assetType === 'image' ? 'image/*' : '.glb'}
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="station-file-upload"
+                    className="flex items-center justify-center gap-2 border border-dashed rounded-lg py-3 px-4 text-xs font-medium cursor-pointer hover:border-cyan-500 hover:bg-cyan-500/10 transition-all text-slate-300 flex-1 text-center bg-[rgba(5,8,13,0.4)]"
+                    style={{ borderColor: 'rgba(30,58,95,0.8)' }}
+                  >
+                    <UploadCloud size={16} className="text-cyan-400" />
+                    {assetValue.startsWith('data:') ? '¡Archivo cargado con éxito!' : `Seleccionar archivo ${assetType === 'image' ? 'de imagen' : '3D (.glb)'}`}
+                  </label>
+                </div>
+
+                {/* URL Input */}
+                <div className="space-y-1.5">
+                  <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">O usar una URL directa</div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={urlInput}
+                      onChange={(e) => setUrlInput(e.target.value)}
+                      placeholder={assetType === 'image' ? 'https://ejemplo.com/imagen.png' : 'https://ejemplo.com/modelo.glb'}
+                      className="flex-1 rounded-lg border text-slate-200 text-xs p-2 outline-none focus:border-cyan-500 shadow-inner"
+                      style={{ borderColor: 'rgba(30,58,95,0.5)', background: 'rgba(5,8,13,0.6)' }}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleApplyUrl}
+                      className="px-3 rounded-lg text-xs font-semibold hover:bg-slate-700 transition-colors border"
+                      style={{ borderColor: 'rgba(30,58,95,0.5)', background: 'rgba(5,8,13,0.8)', color: '#e2e8f0' }}
+                    >
+                      Aplicar
+                    </button>
+                  </div>
+                </div>
               </div>
 
-              {hasColorFilter && (
-                <div className="space-y-2 pt-2 animate-fadeIn">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[11px] text-slate-400 font-medium">Rotación de Matiz (Hue Rotate)</span>
-                    <span className="text-xs scr-mono text-cyan-400 font-bold">{hueRotate}°</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="range"
-                      min="0"
-                      max="360"
-                      value={hueRotate}
-                      onChange={(e) => setHueRotate(parseInt(e.target.value))}
-                      className="flex-1 h-2 rounded-lg appearance-none cursor-pointer outline-none"
+              {/* Rotation Controls for Model */}
+              {assetType === 'model' && (
+                <div className="space-y-2 border-t pt-4" style={{ borderColor: 'rgba(30,58,95,0.4)' }}>
+                  <label className="block text-xs uppercase tracking-wider text-cyan-500 font-bold">Rotación del Modelo</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setRotate(true)}
+                      className="py-1.5 px-3 rounded-lg border text-xs font-semibold transition-colors shadow-inner"
                       style={{
-                        background: 'linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)'
+                        borderColor: rotate ? '#22d3ee' : 'rgba(30,58,95,0.5)',
+                        background: rotate ? 'rgba(34,211,238,0.15)' : 'rgba(5,8,13,0.6)',
+                        color: rotate ? '#22d3ee' : '#cbd5e1'
                       }}
+                    >
+                      Girar Automáticamente
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setRotate(false)}
+                      className="py-1.5 px-3 rounded-lg border text-xs font-semibold transition-colors shadow-inner"
+                      style={{
+                        borderColor: !rotate ? '#22d3ee' : 'rgba(30,58,95,0.5)',
+                        background: !rotate ? 'rgba(34,211,238,0.15)' : 'rgba(5,8,13,0.6)',
+                        color: !rotate ? '#22d3ee' : '#cbd5e1'
+                      }}
+                    >
+                      Estático
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Transform Controls */}
+              <div className="space-y-3 border-t pt-4 mt-4" style={{ borderColor: 'rgba(30,58,95,0.4)' }}>
+                <label className="block text-xs uppercase tracking-wider text-cyan-500 font-bold">Posición y Escala (XYZ)</label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <span className="text-[10px] text-slate-400">Escala ({modelScale}x)</span>
+                    <input type="range" min="0.1" max="3" step="0.1" value={modelScale} onChange={e => setModelScale(parseFloat(e.target.value))} className="w-full h-1.5 bg-slate-800 rounded-full appearance-none outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-cyan-400 [&::-webkit-slider-thumb]:rounded-full" />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[10px] text-slate-400">Offset Z ({posZ}px)</span>
+                    <input type="range" min="-100" max="100" step="1" value={posZ} onChange={e => setPosZ(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-800 rounded-full appearance-none outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-cyan-400 [&::-webkit-slider-thumb]:rounded-full" />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[10px] text-slate-400">Offset X ({posX}px)</span>
+                    <input type="range" min="-100" max="100" step="1" value={posX} onChange={e => setPosX(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-800 rounded-full appearance-none outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-cyan-400 [&::-webkit-slider-thumb]:rounded-full" />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[10px] text-slate-400">Offset Y ({posY}px)</span>
+                    <input type="range" min="-100" max="100" step="1" value={posY} onChange={e => setPosY(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-800 rounded-full appearance-none outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-cyan-400 [&::-webkit-slider-thumb]:rounded-full" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT COL: METADATA & PREVIEW */}
+            <div className="space-y-6">
+              
+              {/* Configuración Operativa y Metadata */}
+              <div className="space-y-3">
+                <label className="block text-xs uppercase tracking-wider text-cyan-500 font-bold">Parámetros Operativos</label>
+                
+                <div className="space-y-1.5">
+                  <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Nombre del Equipo</span>
+                  <input
+                    type="text"
+                    value={stationName}
+                    onChange={(e) => setStationName(e.target.value)}
+                    placeholder="Ej. Alimentador Principal"
+                    className="w-full rounded-lg border text-slate-200 text-xs p-2 outline-none focus:border-cyan-500 shadow-inner"
+                    style={{ borderColor: 'rgba(30,58,95,0.5)', background: 'rgba(5,8,13,0.6)' }}
+                  />
+                </div>
+                
+                <div className="space-y-1.5 pt-2">
+                  <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Velocidad / Capacidad Programada</span>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={capacityValue}
+                      onChange={(e) => setCapacityValue(e.target.value)}
+                      placeholder="Ej. 120"
+                      className="flex-1 rounded-lg border text-slate-200 text-xs p-2 outline-none focus:border-cyan-500 shadow-inner"
+                      style={{ borderColor: 'rgba(30,58,95,0.5)', background: 'rgba(5,8,13,0.6)' }}
                     />
-                    {hueRotate > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => setHueRotate(0)}
-                        className="text-[10px] text-slate-500 hover:text-slate-300 uppercase font-bold"
-                      >
-                        Reset
-                      </button>
+                    <select
+                      value={capacityUnit}
+                      onChange={(e) => setCapacityUnit(e.target.value)}
+                      className="w-24 rounded-lg border text-slate-200 text-xs p-2 outline-none focus:border-cyan-500 appearance-none shadow-inner"
+                      style={{ borderColor: 'rgba(30,58,95,0.5)', background: 'rgba(5,8,13,0.6)' }}
+                    >
+                      <option value="RPM">RPM</option>
+                      <option value="m/min">m/min</option>
+                      <option value="u/h">u/h</option>
+                      <option value="ppm">PPM</option>
+                      <option value="kg/h">kg/h</option>
+                      <option value="l/min">l/min</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5 pt-2">
+                  <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Servicios Requeridos (Luz, Agua, Aire)</span>
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => setReqPower(!reqPower)} className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg border text-xs font-semibold transition-colors shadow-inner ${reqPower ? 'border-amber-400/50 bg-amber-400/20 text-amber-300 drop-shadow-[0_0_4px_rgba(251,191,36,0.3)]' : 'border-[#1e3a5f]/50 bg-[#05080d]/60 text-slate-400'}`}>
+                      <Zap size={14} /> Eléctrica
+                    </button>
+                    <button type="button" onClick={() => setReqWater(!reqWater)} className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg border text-xs font-semibold transition-colors shadow-inner ${reqWater ? 'border-blue-400/50 bg-blue-400/20 text-blue-300 drop-shadow-[0_0_4px_rgba(96,165,250,0.3)]' : 'border-[#1e3a5f]/50 bg-[#05080d]/60 text-slate-400'}`}>
+                      <Droplets size={14} /> Agua
+                    </button>
+                    <button type="button" onClick={() => setReqAir(!reqAir)} className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg border text-xs font-semibold transition-colors shadow-inner ${reqAir ? 'border-slate-300/50 bg-slate-300/20 text-slate-100 drop-shadow-[0_0_4px_rgba(203,213,225,0.3)]' : 'border-[#1e3a5f]/50 bg-[#05080d]/60 text-slate-400'}`}>
+                      <Wind size={14} /> Neumática
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Preview Section */}
+              {assetValue && (
+                <div className="space-y-2 border-t pt-4" style={{ borderColor: 'rgba(30,58,95,0.4)' }}>
+                  <label className="block text-xs uppercase tracking-wider text-cyan-500 font-bold">Vista Previa</label>
+                  <div className="rounded-lg p-2 flex items-center justify-center border shadow-inner overflow-hidden relative" style={{ borderColor: 'rgba(30,58,95,0.6)', background: 'rgba(5,8,13,0.7)', minHeight: '140px', perspective: '1000px' }}>
+                    {assetType === 'image' ? (
+                      <img
+                        src={assetValue}
+                        alt="Preview"
+                        className="max-h-[120px] object-contain rounded"
+                        style={{ filter: (hasColorFilter && hueRotate) ? `hue-rotate(${hueRotate}deg)` : undefined, transform: `translate3d(${posX}px, ${posY}px, ${posZ}px) scale(${modelScale})`, transition: 'transform 0.1s ease-out' }}
+                      />
+                    ) : (
+                      <div style={{ filter: (hasColorFilter && hueRotate) ? `hue-rotate(${hueRotate}deg)` : undefined, transform: `translate3d(${posX}px, ${posY}px, ${posZ}px) scale(${modelScale})`, transition: 'transform 0.1s ease-out' }}>
+                        <model-viewer
+                          src={assetValue}
+                          alt="Preview 3D"
+                          auto-rotate={rotate ? "" : undefined}
+                          camera-controls
+                          interaction-prompt="none"
+                          style={{
+                            width: '130px',
+                            height: '130px',
+                            background: 'transparent'
+                          }}
+                        />
+                      </div>
                     )}
                   </div>
                 </div>
               )}
             </div>
-
-            {/* Preview Section */}
-            {assetValue && (
-              <div className="space-y-2 border-t pt-4" style={{ borderColor: 'var(--scr-border)' }}>
-                <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold">Vista Previa</label>
-                <div className="rounded-lg p-2 flex items-center justify-center bg-[#05080d]/60 border" style={{ borderColor: 'var(--scr-border)', minHeight: '140px' }}>
-                  {assetType === 'image' ? (
-                    <img
-                      src={assetValue}
-                      alt="Preview"
-                      className="max-h-[120px] object-contain rounded"
-                      style={{ filter: (hasColorFilter && hueRotate) ? `hue-rotate(${hueRotate}deg)` : undefined }}
-                    />
-                  ) : (
-                    <div style={{ filter: (hasColorFilter && hueRotate) ? `hue-rotate(${hueRotate}deg)` : undefined }}>
-                      <model-viewer
-                        src={assetValue}
-                        alt="Preview 3D"
-                        auto-rotate={rotate ? "" : undefined}
-                        camera-controls
-                        interaction-prompt="none"
-                        style={{
-                          width: '130px',
-                          height: '130px',
-                          background: 'transparent'
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Footer Actions */}
-          <div className="mt-6 flex justify-between items-center border-t pt-4" style={{ borderColor: 'var(--scr-border)' }}>
+          <div className="mt-8 flex justify-between items-center border-t pt-4" style={{ borderColor: 'rgba(34,211,238,0.2)' }}>
             <button
               type="button"
               onClick={onReset}
@@ -1163,19 +1648,36 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-lg text-xs font-semibold px-4 py-2 hover:bg-slate-800 transition-colors border"
-                style={{ borderColor: 'var(--scr-border)', background: 'var(--scr-panel-2)', color: 'var(--scr-text-300)' }}
+                className="rounded-lg text-xs font-semibold px-4 py-2 hover:bg-slate-700 transition-colors border"
+                style={{ borderColor: 'rgba(30,58,95,0.8)', background: 'rgba(5,8,13,0.6)', color: '#cbd5e1' }}
               >
                 Cancelar
               </button>
               <button
                 type="button"
-                onClick={() => onSave({ type: assetType, value: assetValue, rotate, hueRotate: hasColorFilter ? hueRotate : 0 })}
+                onClick={() => onSave({ 
+                  type: assetType, 
+                  value: assetValue, 
+                  rotate, 
+                  hueRotate: hasColorFilter ? hueRotate : 0,
+                  metadata: {
+                    name: stationName,
+                    capacityValue,
+                    capacityUnit,
+                    power: reqPower,
+                    water: reqWater,
+                    air: reqAir,
+                    scale: modelScale,
+                    posX,
+                    posY,
+                    posZ
+                  }
+                })}
                 disabled={!assetValue}
-                className="rounded-lg text-xs font-semibold px-4 py-2 transition-all active:scale-[0.97] disabled:opacity-40"
-                style={{ background: 'linear-gradient(180deg,#22d3ee,#3b82f6)', color: '#05080d' }}
+                className="rounded-lg text-xs font-bold px-6 py-2 transition-all active:scale-[0.97] disabled:opacity-40 border border-cyan-400/50 shadow-[0_0_12px_rgba(34,211,238,0.3)]"
+                style={{ background: 'linear-gradient(180deg,#22d3ee,#0ea5e9)', color: '#05080d' }}
               >
-                Guardar Cambios
+                Guardar Configuración
               </button>
             </div>
           </div>
@@ -1201,6 +1703,17 @@ export function CadSandboxOverlay({
   const [isReloading, setIsReloading] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, success
 
+  // Theme & Color Preset State
+  const [activeTheme, setActiveTheme] = useState(studioSettings?.activeTheme ?? 'blueprint');
+  const [showThemeModal, setShowThemeModal] = useState(false);
+
+  // Mouse Drag, Pan, and Zoom states
+  const [zoom, setZoom] = useState(0.85);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [rotateAngle, setRotateAngle] = useState({ x: 0, z: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
   // Studio parameters
   const [brightness, setBrightness] = useState(studioSettings?.brightness ?? 40);
   const [shadowAngle, setShadowAngle] = useState(studioSettings?.shadowAngle ?? 210);
@@ -1224,6 +1737,7 @@ export function CadSandboxOverlay({
       setGridOpacity(studioSettings.gridOpacity ?? 100);
       setFog(studioSettings.fog ?? 10);
       setBacklight(studioSettings.backlight ?? true);
+      setActiveTheme(studioSettings.activeTheme ?? 'blueprint');
     }
   }, [studioSettings, open]);
 
@@ -1277,6 +1791,17 @@ export function CadSandboxOverlay({
     setBacklight(true);
     setViewMode('isometric');
     setPlay(true);
+    setActiveTheme('blueprint');
+    setZoom(0.85);
+    setPan({ x: 0, y: 0 });
+    setRotateAngle({ x: 0, z: 0 });
+  };
+
+  const handleSetViewMode = (mode) => {
+    setViewMode(mode);
+    setZoom(0.85);
+    setPan({ x: 0, y: 0 });
+    setRotateAngle({ x: 0, z: 0 });
   };
 
   const handleReload = () => {
@@ -1298,7 +1823,8 @@ export function CadSandboxOverlay({
         floorStyle,
         gridOpacity,
         fog,
-        backlight
+        backlight,
+        activeTheme
       });
     }
     setSaveStatus('success');
@@ -1324,20 +1850,161 @@ export function CadSandboxOverlay({
     }
   };
 
-  // Determine global 3D perspective variables based on viewMode
-  let floorTransform = '';
-  let elementTransform = '';
+  const applyThemePreset = (themeKey) => {
+    setActiveTheme(themeKey);
+    if (themeKey === 'blueprint') {
+      setFloorStyle('grid');
+      setBrightness(50);
+      setMetallic(20);
+      setRoughness(90);
+      setSilhouettes(70);
+      setGridOpacity(100);
+      setFog(5);
+      setBacklight(true);
+    } else if (themeKey === 'cyberpunk') {
+      setFloorStyle('grid');
+      setBrightness(40);
+      setMetallic(90);
+      setRoughness(30);
+      setSilhouettes(30);
+      setGridOpacity(80);
+      setFog(15);
+      setBacklight(true);
+    } else if (themeKey === 'toxic') {
+      setFloorStyle('grid');
+      setBrightness(35);
+      setMetallic(50);
+      setRoughness(70);
+      setSilhouettes(60);
+      setGridOpacity(90);
+      setFog(12);
+      setBacklight(false);
+    } else if (themeKey === 'aluminum') {
+      setFloorStyle('solid');
+      setBrightness(60);
+      setMetallic(95);
+      setRoughness(25);
+      setSilhouettes(0);
+      setGridOpacity(0);
+      setFog(8);
+      setBacklight(true);
+    }
+  };
 
-  if (viewMode === 'isometric') {
-    floorTransform = 'rotateX(60deg) rotateZ(-15deg) translateY(-60px) scale(0.9)';
-    elementTransform = 'rotateX(-60deg) rotateY(0deg) rotateZ(15deg) translateY(-30px)';
-  } else if (viewMode === 'lateral') {
-    floorTransform = 'rotateX(86deg) rotateZ(0deg) translateY(-20px) scale(1)';
-    elementTransform = 'rotateX(-86deg) rotateY(0deg) rotateZ(0deg) translateY(-40px)';
-  } else if (viewMode === 'superior') {
-    floorTransform = 'rotateX(0deg) rotateZ(0deg) translateY(0px) scale(0.85)';
-    elementTransform = 'rotateX(0deg) rotateY(0deg) rotateZ(0deg)';
-  }
+  // Mouse Interaction Handlers
+  const handleMouseDown = (e) => {
+    if (
+      e.target.closest('button') || 
+      e.target.closest('aside') || 
+      e.target.closest('header') || 
+      e.target.closest('.theme-modal') ||
+      (e.target.closest('model-viewer') && !e.shiftKey)
+    ) {
+      return;
+    }
+    setIsDragging(true);
+    setDragStart({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - dragStart.x;
+    const dy = e.clientY - dragStart.y;
+    
+    // Shift drag or Right click drag rotates, otherwise pans
+    const isRotate = e.shiftKey || e.buttons === 2;
+    if (isRotate) {
+      setRotateAngle((prev) => ({
+        x: Math.min(Math.max(prev.x - dy * 0.4, -45), 45),
+        z: prev.z + dx * 0.4
+      }));
+    } else {
+      setPan((prev) => ({
+        x: prev.x + dx,
+        y: prev.y + dy
+      }));
+    }
+    setDragStart({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleWheel = (e) => {
+    e.preventDefault();
+    // Perspective-based zoom: adjust the 3D camera distance, not pixel scale.
+    // Scroll up (deltaY < 0) = move camera closer = zoom value increases.
+    // Scroll down (deltaY > 0) = move camera farther = zoom value decreases.
+    const delta = e.deltaY > 0 ? -0.08 : 0.08;
+    setZoom((prev) => Math.min(Math.max(prev + delta, 0.3), 3.0));
+  };
+
+  // Dynamic Theme Colors Config
+  const themeConfig = {
+    blueprint: {
+      bgColor: '#091624',
+      gridColor: 'rgba(255, 255, 255, 0.08)',
+      dashedColor: 'rgba(255, 255, 255, 0.3)',
+      glowColor: '#38bdf8',
+      modelFilter: 'invert(0.1) hue-rotate(185deg) saturate(2) brightness(1.2)'
+    },
+    cyberpunk: {
+      bgColor: '#020408',
+      gridColor: 'rgba(34, 211, 238, 0.08)',
+      dashedColor: 'rgba(34, 211, 238, 0.3)',
+      glowColor: '#c084fc',
+      modelFilter: 'hue-rotate(290deg) saturate(1.8)'
+    },
+    toxic: {
+      bgColor: '#070c08',
+      gridColor: 'rgba(34, 197, 94, 0.08)',
+      dashedColor: 'rgba(34, 197, 94, 0.3)',
+      glowColor: '#4ade80',
+      modelFilter: 'hue-rotate(85deg) saturate(1.4) brightness(0.95)'
+    },
+    aluminum: {
+      bgColor: '#0f172a',
+      gridColor: 'rgba(100, 116, 139, 0.06)',
+      dashedColor: 'rgba(100, 116, 139, 0.2)',
+      glowColor: '#94a3b8',
+      modelFilter: 'none'
+    }
+  }[activeTheme] || {
+    bgColor: '#04070c',
+    gridColor: 'rgba(34, 211, 238, 0.07)',
+    dashedColor: 'var(--scr-border)',
+    glowColor: '#22d3ee',
+    modelFilter: 'none'
+  };
+
+  // Combine default viewpoint rotations with user dragged offsets
+  // NOTE: pan is intentionally kept SEPARATE from the 3D rotation transform.
+  // The pan must be on the outer (non-rotated) wrapper so it moves in screen space.
+  const baseRx = viewMode === 'isometric' ? 60 : viewMode === 'lateral' ? 86 : 0;
+  const baseRz = viewMode === 'isometric' ? -15 : 0;
+  // baseScale only sets the initial view fit for each viewMode preset— it does NOT zoom.
+  const baseScale = viewMode === 'isometric' ? 0.9 : viewMode === 'lateral' ? 1.0 : 0.85;
+
+  const currentRx = baseRx + rotateAngle.x;
+  const currentRz = baseRz + rotateAngle.z;
+
+  // PERSPECTIVE-BASED ZOOM — physics-correct 3D camera movement:
+  // Increasing zoom moves the camera closer (smaller perspective value = objects appear larger).
+  // Decreasing zoom moves the camera farther (larger perspective value = objects appear smaller).
+  // This preserves the true physical proportions of all 3D objects in the scene—
+  // models, floor tiles, and conveyor lines all scale together as real geometry.
+  // zoom=1.0 → 2000px (default view)
+  // zoom=2.0 → 1000px (camera 2× closer)
+  // zoom=0.5 → 4000px (camera 2× farther)
+  const perspectiveZoom = Math.round(2000 / zoom);
+
+  // The grid itself only rotates + the initial viewMode fit scale — NO zoom scale here
+  const gridTransform = `rotateX(${currentRx}deg) rotateZ(${currentRz}deg) scale(${baseScale})`;
+  // The individual elements counter-rotate so they always face the camera
+  const elementTransform = `rotateZ(${-currentRz}deg) rotateX(${-currentRx}deg)`;
+  // Pan is applied on the outer floor wrapper (flat screen space)
+  const panStyle = { transform: `translate(${pan.x}px, ${pan.y}px)` };
 
   // Exposure mapping: 40% maps to 1.0, 100% to 2.5, etc.
   const exposureVal = (brightness / 40) * 1.0;
@@ -1345,7 +2012,14 @@ export function CadSandboxOverlay({
   // Filter effect mapping for silhouettes (contrast & outline feel)
   const silhouetteStyle = silhouettes > 0 
     ? `contrast(${1 + silhouettes / 50}) brightness(${1 - silhouettes / 200}) saturate(${1 - silhouettes / 100})`
-    : undefined;
+    : '';
+
+  // Combined final filter style for models — applied to a wrapper div around model-viewer
+  // because CSS filters don't propagate through shadow DOM inside <model-viewer>
+  const finalModelFilter = [
+    themeConfig.modelFilter !== 'none' ? themeConfig.modelFilter : '',
+    silhouetteStyle
+  ].filter(Boolean).join(' ') || 'none';
 
   return (
     <AnimatePresence>
@@ -1360,8 +2034,8 @@ export function CadSandboxOverlay({
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22d3ee] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#22d3ee]"></span>
               </span>
               <h2 className="scr-display font-black text-sm tracking-widest text-slate-50 uppercase">Twin Digital Activo</h2>
             </div>
@@ -1371,11 +2045,13 @@ export function CadSandboxOverlay({
               <button
                 type="button"
                 onClick={() => setPlay(!play)}
-                title={play ? "Pausar Rotación" : "Activar Rotación"}
-                className="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-cyan-400 transition-colors"
+                title={play ? "Pausar Simulación" : "Iniciar Simulación"}
+                className="p-1.5 rounded hover:bg-slate-800 transition-colors"
+                style={{ color: play ? '#22d3ee' : '#64748b' }}
               >
-                {play ? <Pause size={14} /> : <Play size={14} />}
+                {play ? <Activity size={14} /> : <Activity size={14} />}
               </button>
+              <span className="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded" style={{ color: play ? '#22d3ee' : '#64748b', background: play ? 'rgba(34,211,238,0.1)' : 'transparent', border: play ? '1px solid rgba(34,211,238,0.2)' : '1px solid transparent' }}>{play ? 'SIM ON' : 'SIM OFF'}</span>
               <button
                 type="button"
                 onClick={handleResetStudio}
@@ -1383,6 +2059,14 @@ export function CadSandboxOverlay({
                 className="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-cyan-400 transition-colors"
               >
                 <RotateCcw size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowThemeModal(true)}
+                title="Seleccionar Paleta de Colores"
+                className="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-cyan-400 transition-colors"
+              >
+                <Palette size={14} />
               </button>
               <span className="w-px h-4 bg-slate-800" />
 
@@ -1394,7 +2078,7 @@ export function CadSandboxOverlay({
                     <button
                       key={mode}
                       type="button"
-                      onClick={() => setViewMode(mode)}
+                      onClick={() => handleSetViewMode(mode)}
                       className="px-2.5 py-1 rounded text-[10px] uppercase font-bold tracking-wider transition-all"
                       style={{
                         background: active ? 'rgba(34,211,238,0.12)' : 'transparent',
@@ -1402,7 +2086,7 @@ export function CadSandboxOverlay({
                         border: active ? '1px solid rgba(34,211,238,0.3)' : '1px solid transparent'
                       }}
                     >
-                      {mode === 'isometric' ? 'Isométrica' : mode}
+                      {mode === 'isometric' ? 'Isométrica' : mode === 'lateral' ? 'Lateral' : 'Superior'}
                     </button>
                   );
                 })}
@@ -1466,7 +2150,16 @@ export function CadSandboxOverlay({
 
         {/* Central Workspace area */}
         <div className="flex-1 flex overflow-hidden relative">
-          <div className="flex-1 relative flex items-center justify-center p-8 bg-[#04070c]">
+          <div 
+            className="flex-1 relative flex items-center justify-center p-8 overflow-hidden select-none cursor-grab active:cursor-grabbing"
+            style={{ background: themeConfig.bgColor }}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onWheel={handleWheel}
+            onContextMenu={(e) => e.preventDefault()}
+          >
             {/* Background Nebulas */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(34,211,238,0.03),transparent_40%),radial-gradient(circle_at_70%_80%,rgba(59,130,246,0.03),transparent_50%)] pointer-events-none" />
 
@@ -1489,41 +2182,60 @@ export function CadSandboxOverlay({
                 <span className="text-xs scr-mono text-cyan-400 tracking-wider">REGENERANDO ESCENA CAD...</span>
               </div>
             ) : (
-              /* Perspective Sandbox Floor Wrapper */
+              /* Perspective Sandbox Floor Wrapper — pan + perspective-camera zoom here */
               <div 
-                className="sandbox-floor w-[95%] h-[90%] flex items-center justify-center" 
-                style={{ perspective: '1200px', perspectiveOrigin: '50% 30%' }}
+                className="sandbox-floor absolute inset-0 flex items-center justify-center"
+                style={{ 
+                  ...panStyle, 
+                  perspective: `${perspectiveZoom}px`,
+                  perspectiveOrigin: '50% 40%'
+                }}
               >
-                {/* Rotatable Grid Floor */}
+                {/* Rotatable Grid Floor — rotation+scale only, NO translate */}
                 <div 
-                  className="sandbox-grid flex items-center justify-center gap-8 py-12 px-16 rounded-[40px] transition-all duration-700 ease-out"
+                  className="sandbox-grid flex items-center justify-center gap-12 py-16 px-20 transition-all duration-200 ease-out"
                   style={{
-                    transform: floorTransform,
+                    transform: gridTransform,
                     transformStyle: 'preserve-3d',
-                    minWidth: '95%',
-                    height: '520px',
-                    // Floor styles
-                    background: floorStyle === 'grid' || floorStyle === 'reflective' ? 'rgba(9,15,26,0.5)' : floorStyle === 'solid' ? '#101622' : 'transparent',
-                    border: floorStyle !== 'none' ? '1px dashed rgba(34,211,238,0.2)' : 'none',
-                    boxShadow: floorStyle === 'reflective' ? '0 25px 50px -12px rgba(34,211,238,0.05), inset 0 0 40px rgba(34,211,238,0.05)' : 'none'
+                    width: '160%',
+                    minWidth: '1400px',
+                    height: '700px',
+                    position: 'relative',
+                    // Floor styles driven by active theme
+                    background: floorStyle === 'grid' || floorStyle === 'reflective'
+                      ? `rgba(9,15,26,0.6)`
+                      : floorStyle === 'solid' ? '#101622' : 'transparent',
+                    border: floorStyle !== 'none' ? `1px solid ${themeConfig.glowColor}33` : 'none',
+                    boxShadow: floorStyle === 'reflective'
+                      ? `0 0 80px -20px ${themeConfig.glowColor}44, inset 0 0 60px ${themeConfig.glowColor}11`
+                      : `0 0 40px -20px ${themeConfig.glowColor}22`
                   }}
                 >
-                  {/* Grid Lines Overlay */}
-                  {floorStyle === 'grid' && (
+                  {/* Full-area Grid Lines Overlay */}
+                  {(floorStyle === 'grid' || floorStyle === 'reflective') && (
                     <div 
-                      className="absolute inset-0 rounded-[40px] pointer-events-none"
+                      className="absolute inset-0 pointer-events-none"
                       style={{
                         opacity: gridOpacity / 100,
-                        backgroundImage: 'linear-gradient(rgba(34,211,238,0.07) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(34,211,238,0.07) 1.5px, transparent 1.5px)',
-                        backgroundSize: '36px 36px',
-                        maskImage: 'radial-gradient(circle, black, transparent 80%)'
+                        backgroundImage: [
+                          `linear-gradient(${themeConfig.glowColor}18 1px, transparent 1px)`,
+                          `linear-gradient(90deg, ${themeConfig.glowColor}18 1px, transparent 1px)`,
+                          `linear-gradient(${themeConfig.glowColor}06 1px, transparent 1px)`,
+                          `linear-gradient(90deg, ${themeConfig.glowColor}06 1px, transparent 1px)`
+                        ].join(', '),
+                        backgroundSize: '80px 80px, 80px 80px, 16px 16px, 16px 16px'
                       }}
                     />
                   )}
 
                   {/* Reflection Mirror Overlay */}
                   {floorStyle === 'reflective' && (
-                    <div className="absolute inset-0 rounded-[40px] bg-gradient-to-t from-cyan-900/10 to-transparent pointer-events-none" />
+                    <div 
+                      className="absolute inset-0 pointer-events-none"
+                      style={{
+                        background: `radial-gradient(ellipse at center bottom, ${themeConfig.glowColor}18, transparent 70%)`
+                      }}
+                    />
                   )}
 
                   {/* Render all stations sequentially */}
@@ -1540,15 +2252,15 @@ export function CadSandboxOverlay({
                           <div 
                             className="w-10 h-1 border-t-2 border-dashed self-center opacity-60 shrink-0" 
                             style={{ 
-                              borderColor: 'var(--scr-border)',
+                              borderColor: themeConfig.dashedColor,
                               transform: 'translateZ(10px)'
                             }} 
                           />
                         )}
 
-                        {/* Station Standup Node */}
+                        {/* Station Standup Node — counter-rotates so it faces the camera */}
                         <div 
-                          className="flex flex-col items-center relative transition-transform duration-700 ease-out"
+                          className="flex flex-col items-center relative"
                           style={{ 
                             transformStyle: 'preserve-3d',
                             transform: elementTransform
@@ -1556,52 +2268,76 @@ export function CadSandboxOverlay({
                         >
                           {/* Holographic Glowing Platform */}
                           <div 
-                            className="absolute bottom-1 w-28 h-10 rounded-full blur-[2px] transition-all"
+                            className="absolute bottom-1 w-36 h-12 rounded-full blur-[3px] animate-pulse"
                             style={{
-                              background: `radial-gradient(ellipse at center, ${c}44, transparent 70%)`,
+                              background: `radial-gradient(ellipse at center, ${themeConfig.glowColor}55, transparent 70%)`,
                               transform: 'rotateX(75deg) translateZ(-4px)'
                             }}
                           />
                           <div 
-                            className="absolute bottom-1 w-24 h-8 rounded-full border transition-all"
+                            className="absolute bottom-1 w-32 h-10 rounded-full border"
                             style={{
-                              borderColor: `${c}66`,
-                              boxShadow: `0 0 10px ${c}33`,
+                              borderColor: `${themeConfig.glowColor}88`,
+                              boxShadow: `0 0 16px ${themeConfig.glowColor}44`,
                               background: 'rgba(5,8,13,0.4)',
                               transform: 'rotateX(75deg) translateZ(0px)'
                             }}
                           />
 
                           {/* Model Viewport / Image billboard */}
+                          {/* The outer div carries the CSS filter; model-viewer is inside so the
+                              filter composites over the rendered WebGL output correctly */}
                           <div 
-                            className="relative w-36 h-36 flex items-center justify-center mb-6"
                             style={{ 
-                              transform: 'translateZ(20px)',
-                              filter: silhouetteStyle 
+                              transform: 'translateZ(24px)',
+                              marginBottom: '28px'
                             }}
                           >
-                            {isModel && assetUrl ? (
-                              <model-viewer
-                                class="sandbox-viewer"
-                                src={assetUrl}
-                                alt={st.name}
-                                auto-rotate={play ? "" : undefined}
-                                camera-controls
-                                shadow-intensity="1"
-                                exposure={exposureVal}
-                                interaction-prompt="none"
-                                style={{ width: '136px', height: '136px', background: 'transparent' }}
-                              />
-                            ) : (
-                              <div className="relative group/billboard flex flex-col items-center">
-                                <img 
-                                  src={STATION_IMAGES[st.img]} 
-                                  alt={st.name} 
-                                  className="h-28 w-28 object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.6)]" 
+                            {/* Filter wrapper — CSS filter works on the composited output */}
+                            <div style={{ filter: finalModelFilter }}>
+                              {isModel && assetUrl ? (
+                                /*
+                                  TWIN DIGITAL INDUSTRIAL — Propiedades físicas:
+                                  - Sin auto-rotate: las máquinas industriales no giran solas
+                                  - Sin camera-controls: el usuario NO puede orbitar el modelo
+                                  - camera-orbit fijo: ángulo industrial (frontal ligeramente elevado)
+                                  - disable-zoom / disable-pan / disable-tap: completamente anclado
+                                  - min/max-camera-orbit: cámara bloqueada al preset
+                                  - shadow-intensity: sombra de proyección al piso
+                                */
+                                <model-viewer
+                                  class="sandbox-viewer"
+                                  src={assetUrl}
+                                  alt={st.name}
+                                  shadow-intensity="1.5"
+                                  shadow-softness="0.8"
+                                  exposure={exposureVal}
+                                  interaction-prompt="none"
+                                  camera-orbit="0deg 80deg 105%"
+                                  min-camera-orbit="0deg 80deg 105%"
+                                  max-camera-orbit="0deg 80deg 105%"
+                                  field-of-view="28deg"
+                                  disable-zoom
+                                  disable-pan
+                                  disable-tap
+                                  style={{ 
+                                    width: '160px', height: '160px', 
+                                    background: 'transparent', display: 'block',
+                                    pointerEvents: 'none'
+                                  }}
                                 />
-                                <span className="absolute bottom-0 text-[8px] bg-slate-800/80 px-1.5 py-0.5 rounded text-slate-500 font-bold uppercase tracking-wider">2D CAD</span>
-                              </div>
-                            )}
+                              ) : (
+                                <div className="relative flex flex-col items-center">
+                                  <img 
+                                    src={STATION_IMAGES[st.img]} 
+                                    alt={st.name} 
+                                    className="h-32 w-32 object-contain drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" 
+                                    style={{ filter: finalModelFilter }}
+                                  />
+                                  <span className="absolute bottom-0 text-[8px] bg-slate-800/80 px-1.5 py-0.5 rounded text-slate-500 font-bold uppercase tracking-wider">2D CAD</span>
+                                </div>
+                              )}
+                            </div>
                           </div>
 
                           {/* Float Station Info Banner */}
@@ -1636,6 +2372,28 @@ export function CadSandboxOverlay({
                 <h3 className="scr-display font-black text-xs uppercase tracking-wider text-slate-100">Estudio CAD Pro</h3>
               </div>
               <span className="text-[8px] bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-1.5 py-0.5 rounded font-black uppercase tracking-wider">Premium</span>
+            </div>
+
+            {/* Theme / Palette Selection Info Block */}
+            <div className="space-y-3">
+              <h4 className="text-[10px] font-bold tracking-widest text-slate-500 uppercase flex items-center gap-1.5">
+                <Palette size={12} className="text-slate-400" /> Paleta y Temas
+              </h4>
+              <div className="bg-slate-900/40 p-2.5 rounded-lg border border-slate-800 space-y-2">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-400">Paleta Activa</span>
+                  <span className="text-cyan-400 font-black uppercase tracking-wider text-[10px]">
+                    {activeTheme === 'blueprint' ? 'Planos Blueprint' : activeTheme === 'cyberpunk' ? 'Clásico Cyberpunk' : activeTheme === 'toxic' ? 'Industrial Toxic' : 'Gris Aluminio'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowThemeModal(true)}
+                  className="w-full py-1.5 border border-cyan-500/20 hover:border-cyan-500/40 bg-cyan-500/5 hover:bg-cyan-500/10 text-cyan-400 rounded-md text-[10px] uppercase font-bold tracking-wider transition-all flex items-center justify-center gap-1.5"
+                >
+                  <Palette size={12} /> Seleccionar Paleta
+                </button>
+              </div>
             </div>
 
             {/* Category: Iluminacion y Sombras */}
@@ -1848,6 +2606,119 @@ export function CadSandboxOverlay({
             </div>
           </aside>
         </div>
+
+        {/* Color Palette / Theme Selection Modal (Image 2 matching) */}
+        {showThemeModal && (
+          <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/75 backdrop-blur-sm theme-modal">
+            <div className="bg-[#050b14] border border-[#0d233a] rounded-2xl p-6 w-[840px] max-w-[95vw] shadow-2xl relative">
+              
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-[#0d233a] pb-4">
+                <div className="flex items-center gap-3">
+                  <Palette size={18} className="text-[#22d3ee] drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]" />
+                  <h3 className="scr-display font-black text-sm uppercase tracking-wider text-slate-100">
+                    Seleccionar Paleta de Colores / Temas del Twin
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowThemeModal(false)}
+                  className="text-slate-500 hover:text-slate-200 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Grid of themes */}
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 my-6">
+                {[
+                  {
+                    id: 'blueprint',
+                    name: 'PLANOS BLUEPRINT',
+                    desc: 'Estilo esquema técnico en azul celeste y cuadrícula blanca.',
+                    bgGradient: 'bg-gradient-to-br from-[#0b2239] to-[#0f3456]',
+                    previewEl: (
+                      <div className="w-full h-full flex items-center justify-center relative overflow-hidden" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)', backgroundSize: '12px 12px' }}>
+                        <div className="w-8 h-8 rounded-sm border border-cyan-400 bg-cyan-400/20 shadow-[0_0_8px_rgba(34,211,238,0.3)] rotate-12" />
+                      </div>
+                    )
+                  },
+                  {
+                    id: 'cyberpunk',
+                    name: 'CLÁSICO CYBERPUNK',
+                    desc: 'Fondo oscuro con flujo cian de alto contraste y partículas.',
+                    bgGradient: 'bg-gradient-to-br from-[#020408] to-[#080e1a]',
+                    previewEl: (
+                      <div className="w-full h-full flex items-center justify-center relative overflow-hidden">
+                        <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_30%_30%,rgba(192,132,252,0.15),transparent_60%)]" />
+                        <div className="w-8 h-8 rounded-sm border border-purple-400 bg-purple-400/20 shadow-[0_0_8px_rgba(192,132,252,0.3)] rotate-45" />
+                      </div>
+                    )
+                  },
+                  {
+                    id: 'toxic',
+                    name: 'INDUSTRIAL TOXIC',
+                    desc: 'Gris mate industrial con contornos verde de alta visibilidad.',
+                    bgGradient: 'bg-gradient-to-br from-[#070c08] to-[#121f14]',
+                    previewEl: (
+                      <div className="w-full h-full flex items-center justify-center relative overflow-hidden">
+                        <div className="w-8 h-8 rounded-sm border border-emerald-400 bg-emerald-400/10 shadow-[0_0_8px_rgba(52,211,153,0.3)] animate-pulse" />
+                      </div>
+                    )
+                  },
+                  {
+                    id: 'aluminum',
+                    name: 'GRIS ALUMINIO',
+                    desc: 'Modelo 3D de aluminio pulido metálico realista sin contornos.',
+                    bgGradient: 'bg-gradient-to-br from-[#1e293b] to-[#334155]',
+                    previewEl: (
+                      <div className="w-full h-full flex items-center justify-center relative overflow-hidden">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-200 via-slate-400 to-slate-600 shadow-lg border border-slate-300" />
+                      </div>
+                    )
+                  }
+                ].map((item) => {
+                  const active = activeTheme === item.id;
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => applyThemePreset(item.id)}
+                      className={`cursor-pointer rounded-xl border p-3 flex flex-col transition-all duration-300 relative select-none ${active ? 'border-[#22d3ee] shadow-[0_0_12px_rgba(34,211,238,0.2)] bg-[#081324]' : 'border-slate-800 bg-[#060b13] hover:border-slate-700'}`}
+                    >
+                      {/* Preview Box */}
+                      <div className={`h-24 rounded-lg overflow-hidden border border-slate-800 ${item.bgGradient} mb-3 relative`}>
+                        {item.previewEl}
+                        {active && (
+                          <div className="absolute top-2 left-2 bg-[#22c55e] text-[#05080d] text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
+                            ACTIVO
+                          </div>
+                        )}
+                      </div>
+                      <span className="block text-[11px] font-black uppercase tracking-wider text-slate-100 mb-1">
+                        {item.name}
+                      </span>
+                      <span className="block text-[9px] text-slate-500 leading-tight">
+                        {item.desc}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Bottom Customizer Button */}
+              <div className="border-t border-[#0d233a] pt-4 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowThemeModal(false)}
+                  className="w-full py-3 rounded-xl text-xs font-black uppercase tracking-widest text-slate-100 bg-gradient-to-r from-[#0d233a] via-[#132c48] to-[#0d233a] hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 border border-[#1a3d60]"
+                >
+                  <SlidersHorizontal size={14} className="text-[#22d3ee]" /> Subir Foto / Personalizar Colores de la Línea
+                </button>
+              </div>
+
+            </div>
+          </div>
+        )}
       </motion.div>
     </AnimatePresence>
   );

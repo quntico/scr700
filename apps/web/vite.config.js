@@ -361,7 +361,12 @@ logger.error = (msg, options) => {
 
 export default defineConfig({
 	optimizeDeps: {
-		include: allDeps,
+		include: [
+			...allDeps,
+			'three',
+			'@react-three/fiber',
+			'@react-three/drei',
+		],
 	},
 	customLogger: logger,
 	plugins: [
@@ -392,6 +397,14 @@ export default defineConfig({
 		alias: {
 			'@': path.resolve(__dirname, './src'),
 		},
+		// CRITICAL: Force single instance of React and Three.js across the monorepo.
+		dedupe: [
+			'react',
+			'react-dom',
+			'three',
+			'@react-three/fiber',
+			'@react-three/drei',
+		],
 	},
 	build: {
 		rollupOptions: {

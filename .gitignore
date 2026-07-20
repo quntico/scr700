@@ -36,3 +36,5 @@ lerna-debug.log*
 .gemini/
 .tempmediaStorage/
 app.tar.gz
+
+.vercel
