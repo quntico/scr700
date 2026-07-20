@@ -1102,7 +1102,7 @@ export function StationOperationDialog({ open, onClose, station, currentAsset, o
               
               {/* Left: 3D Model / Status (Span 6) */}
               <div 
-                className={`${isFullscreen ? 'absolute inset-0 z-[200] bg-[#05080d] border border-cyan-500/50 rounded-xl' : 'lg:col-span-6 border border-[#1e3a5f]/60 bg-[#05080d]/50 rounded-xl'} p-4 flex flex-col relative transition-all duration-300`}
+                className={`${isFullscreen ? 'absolute inset-0 z-[200] bg-[#05080d] border border-cyan-500/50 rounded-xl' : 'lg:col-span-6 border border-[#1e3a5f]/60 bg-[#05080d]/50 rounded-xl relative'} p-4 flex flex-col transition-all duration-300`}
               >
                 <h5 className="text-[10px] uppercase tracking-wider text-cyan-500 font-bold">ESTADO DE LA MÁQUINA</h5>
                 <div className="flex-1 relative mt-2 flex items-center justify-center min-h-[260px] h-full">
