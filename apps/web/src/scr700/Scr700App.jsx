@@ -95,7 +95,10 @@ export default function Scr700App() {
 
   const [stationAssets, setStationAssets] = useState(() => {
     if (typeof window === 'undefined') return {};
-    const assets = {};
+    const assets = {
+      s01: { metadata: { capacityValue: '950', capacityUnit: 'kg/h' } },
+      s03: { metadata: { capacityValue: '300', capacityUnit: 'u/h', power: true, water: true } }
+    };
     const ids = ['win', 's01', 's02', 's03', 's04', 's05', 'wout'];
     for (const id of ids) {
       const val = window.localStorage.getItem(`scr700-station-asset-${id}`);

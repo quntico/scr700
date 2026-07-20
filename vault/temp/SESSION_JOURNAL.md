@@ -4011,3 +4011,63 @@
 ## 2026-07-20 03:53:17.905Z console.warn
 - text: Could not sync setting scr700-station-asset-s03 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s03' exceeded the quota.
 
+## 2026-07-20 05:59:51.616Z click
+- element: {"tag":"div","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":" VER EQUIPO"}
+
+## 2026-07-20 05:59:53.759Z click
+- element: {"tag":"button","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-20 06:01:35.553Z click
+- element: {"tag":"div","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":" VER EQUIPO"}
+
+## 2026-07-20 06:01:36.817Z click
+- element: {"tag":"model-viewer","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-20 06:01:39.365Z click
+- element: {"tag":"model-viewer","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-20 06:01:42.965Z click
+- element: {"tag":"model-viewer","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-20 06:01:46.553Z click
+- element: {"tag":"model-viewer","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-20 06:01:49.075Z click
+- element: {"tag":"model-viewer","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-20 06:01:52.181Z click
+- element: {"tag":"button","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-20 06:02:23.100Z console.warn
+- text: Could not sync setting scr700-station-asset-1 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-1' exceeded the quota.
+
+## 2026-07-20 06:02:23.102Z console.warn
+- text: Could not sync setting scr700-station-asset-s01 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s01' exceeded the quota.
+
+## 2026-07-20 06:02:23.104Z console.warn
+- text: Could not sync setting scr700-station-asset-s02 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s02' exceeded the quota.
+
+## 2026-07-20 06:02:23.105Z console.warn
+- text: Could not sync setting scr700-station-asset-s03 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s03' exceeded the quota.
+
+## 2026-07-20 06:03:25.030Z console.warn
+- text: Supabase settings query returned an error (using localStorage fallback): TypeError: Failed to fetch
+
+## 2026-07-20 06:03:25.087Z load
+- url: http://localhost:3000/
+
+## 2026-07-20 06:03:25.267Z console.warn
+- text: THREE.WARNING: Multiple instances of Three.js being imported.
+
+## 2026-07-20 06:03:30.461Z console.warn
+- text: Could not sync setting scr700-station-asset-1 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-1' exceeded the quota.
+
+## 2026-07-20 06:03:30.463Z console.warn
+- text: Could not sync setting scr700-station-asset-s01 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s01' exceeded the quota.
+
+## 2026-07-20 06:03:30.465Z console.warn
+- text: Could not sync setting scr700-station-asset-s02 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s02' exceeded the quota.
+
+## 2026-07-20 06:03:30.466Z console.warn
+- text: Could not sync setting scr700-station-asset-s03 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s03' exceeded the quota.
+

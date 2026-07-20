@@ -221,7 +221,7 @@ function ProcessView({
       const saved = localStorage.getItem('scr700-station-spacing');
       if (saved) return parseInt(saved);
     } catch(e) {}
-    return 34;
+    return 200;
   });
 
   useEffect(() => {

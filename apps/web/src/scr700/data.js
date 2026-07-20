@@ -53,13 +53,9 @@ export const STATION_IMAGES = {
 
 // Ordered stations for the horizontal process flow
 export const PROCESS_STATIONS = [
-  { id: 'win', num: '', name: 'ALMACÉN', img: 'warehouseIn', state: null },
   { id: 's01', num: '01', name: 'Alimentador', img: 'feeder', state: 'run' },
   { id: 's02', num: '02', name: 'Corte', img: 'cut', state: 'run' },
-  { id: 's03', num: '03', name: 'Ensamble A', img: 'assemblyA', state: 'run' },
-  { id: 's04', num: '04', name: 'Ensamble B', img: 'assemblyB', state: 'wait' },
-  { id: 's05', num: '05', name: 'Inspección', img: 'inspection', state: 'run' },
-  { id: 'wout', num: '', name: 'ALMACÉN\nPRODUCTO\nTERMINADO', img: 'warehouseOut', state: null },
+  { id: 's03', num: '03', name: 'LAVADORA\nSECADORA FULL', img: 'assemblyA', state: 'run' },
 ];
 
 // KPI strip on Centro de Control (matches control-room layout)
