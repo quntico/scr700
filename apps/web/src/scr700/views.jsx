@@ -10,8 +10,8 @@ import {
   UploadCloud, BellRing, Wrench, Box, FlaskConical, GitCompare, FileText,
   Sparkles, CheckCircle2, XCircle, CalendarClock, Cpu, Gauge, Zap, Droplets, Wind,
   Activity, Target, ShieldCheck, CheckCircle, Clock, OctagonX, ChevronDown,
-  SlidersHorizontal, Maximize2,
-  Edit, X, Image, FileCode, Plus,
+  SlidersHorizontal, Maximize2, Home, ArrowRight, Upload,
+  Edit, X, Image, FileCode, Plus, Server,
   Pause, RotateCcw, RefreshCw, Trash2, Camera, Video, Minimize2, Lightbulb, Sun, Layers, Palette,
 } from 'lucide-react';
 import {
@@ -22,6 +22,7 @@ import {
   THROUGHPUT_BARS, PPM_SERIES, QUALITY_LEGEND,
 } from './data';
 import { Panel, Pill, Dot, Btn, statusColor, statusLabel, chartTheme } from './ui';
+import { SingleMachineViewer3D } from './CadSandboxViewer3D';
 
 const fmt = (n) => (typeof n === 'number' ? n.toLocaleString('es-MX', { maximumFractionDigits: 2 }) : n);
 
@@ -89,8 +90,8 @@ function ProcessStation({ st, i, editorMode, asset, onEdit }) {
   const meta = st.state ? STATE_META[st.state] : null;
   const c = meta ? meta.color : '#3b82f6';
   
-  const isModel = asset && asset.type === 'model';
-  const assetUrl = asset ? asset.value : STATION_IMAGES[st.img];
+  const isModel = asset && asset.type === 'model' && !!asset.value;
+  const assetUrl = (asset && asset.value) ? asset.value : STATION_IMAGES[st.img];
   const rotate = asset ? asset.rotate !== false : true;
   const hueRotate = asset ? asset.hueRotate || 0 : 0;
   const filterStyle = hueRotate ? `hue-rotate(${hueRotate}deg)` : undefined;
@@ -106,30 +107,33 @@ function ProcessStation({ st, i, editorMode, asset, onEdit }) {
       initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 + i * 0.06, duration: 0.4 }}
       className="relative flex flex-col items-center shrink-0 group cursor-pointer"
-      style={{ width: 150 }}
+      style={{ width: 210 }}
       onClick={onEdit}
     >
-      <div className="relative h-[130px] w-[130px] grid place-items-center" style={{ perspective: '1000px' }}>
-        {/* glow platform */}
+      <div className="relative h-[160px] w-[190px] grid place-items-center" style={{ perspective: '1000px' }}>
+        {/* Ground shadow oval */}
         <span
           className="absolute bottom-2 left-1/2 -translate-x-1/2"
-          style={{ width: 108, height: 30, borderRadius: '50%', background: `radial-gradient(ellipse at center, ${c}55, transparent 70%)`, filter: 'blur(2px)' }}
+          style={{ width: 145, height: 32, borderRadius: '50%', background: `radial-gradient(ellipse at center, ${c}44, transparent 70%)`, filter: 'blur(4px)' }}
         />
         <span
           className="absolute bottom-3 left-1/2 -translate-x-1/2"
-          style={{ width: 92, height: 20, borderRadius: '50%', border: `1px solid ${c}77`, boxShadow: `0 0 12px ${c}55` }}
+          style={{ width: 125, height: 20, borderRadius: '50%', border: `1px solid ${c}55`, boxShadow: `0 0 14px ${c}33` }}
         />
         
         {isModel ? (
           <div
-            style={{ width: '118px', height: '118px', filter: filterStyle, transform: transformStyle, transition: 'transform 0.2s ease-out' }}
-            className="relative drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] flex items-center justify-center"
+            style={{ width: '180px', height: '155px', filter: filterStyle, transform: transformStyle, transition: 'transform 0.2s ease-out' }}
+            className="relative drop-shadow-[0_12px_24px_rgba(0,0,0,0.75)] flex items-center justify-center"
           >
             <model-viewer
               src={assetUrl}
               alt={st.name}
-              shadow-intensity="1.2"
-              shadow-softness="0.6"
+              shadow-intensity="1.6"
+              shadow-softness="0.5"
+              exposure="1.15"
+              render-scale="2"
+              quality-policy="high"
               interaction-prompt="none"
               camera-orbit="0deg 80deg 105%"
               min-camera-orbit="0deg 80deg 105%"
@@ -138,11 +142,22 @@ function ProcessStation({ st, i, editorMode, asset, onEdit }) {
               disable-zoom
               disable-pan
               disable-tap
-              style={{ width: '118px', height: '118px', background: 'transparent', pointerEvents: 'none' }}
+              style={{ width: '180px', height: '155px', background: 'transparent', pointerEvents: 'none', imageRendering: '-webkit-optimize-contrast' }}
             />
           </div>
         ) : (
-          <img src={assetUrl} alt={st.name} style={{ filter: filterStyle, transform: transformStyle, transition: 'transform 0.2s ease-out' }} className="relative h-[118px] w-[118px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]" />
+          <img 
+            src={assetUrl} 
+            alt={st.name} 
+            style={{ 
+              filter: `${filterStyle || ''} contrast(1.06) brightness(1.04)`, 
+              transform: `${transformStyle} translateZ(0)`, 
+              transition: 'transform 0.2s ease-out',
+              imageRendering: '-webkit-optimize-contrast',
+              WebkitBackfaceVisibility: 'hidden'
+            }} 
+            className="relative h-[155px] w-[180px] object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.75)] hover:scale-105" 
+          />
         )}
 
         <div className="absolute inset-0 bg-[#05080d]/60 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -154,7 +169,7 @@ function ProcessStation({ st, i, editorMode, asset, onEdit }) {
       <div className="mt-6 text-center px-1 flex flex-col items-center w-full">
         <div className="flex items-start justify-center gap-1.5 min-h-[40px]">
           {st.num && <span className="scr-mono text-[14px] font-bold" style={{ color: c, marginTop: '2px' }}>{st.num}</span>}
-          <span className="scr-display text-[13px] font-bold text-slate-100 whitespace-pre-line leading-tight max-w-[120px] drop-shadow-md">{asset?.metadata?.name || st.name}</span>
+          <span className="scr-display text-[13px] font-bold text-slate-100 whitespace-pre-line leading-tight max-w-[150px] drop-shadow-md">{asset?.metadata?.name || st.name}</span>
         </div>
         {meta && (
           <div className="mt-0 flex items-center justify-center gap-1.5 text-[11.5px] font-bold tracking-wide" style={{ color: meta.color }}>
@@ -289,7 +304,32 @@ function ProcessView({
               </div>
             </div>
           )}
-          <div className="flex items-start gap-1 min-w-max mx-auto w-fit">
+          <div className="flex items-start gap-1 min-w-max mx-auto w-fit relative" style={{ perspective: '1200px' }}>
+            {/* Single Unified 3D CAD Floor Grid Plane under entire process line */}
+            <div 
+              className="absolute -left-6 -right-6 top-[152px] h-[105px] pointer-events-none select-none z-0"
+              style={{
+                transform: 'rotateX(76deg)',
+                transformOrigin: '50% 0%',
+                background: `
+                  linear-gradient(to right, rgba(34,211,238,0.3) 1px, transparent 1px),
+                  linear-gradient(to bottom, rgba(34,211,238,0.3) 1px, transparent 1px)
+                `,
+                backgroundSize: '24px 24px',
+                border: '1px solid rgba(34,211,238,0.6)',
+                boxShadow: '0 0 30px rgba(34,211,238,0.2), inset 0 0 20px rgba(34,211,238,0.15)',
+                borderRadius: '4px'
+              }}
+            >
+              {/* Continuous Center Axis Line */}
+              <div className="absolute top-1/2 left-0 right-0 h-[1.5px] bg-cyan-400/80" />
+              {/* CAD Corner Brackets */}
+              <div className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-cyan-400" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-cyan-400" />
+              <div className="absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-cyan-400" />
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-cyan-400" />
+            </div>
+
             {activeStations.map((st, i) => (
               <React.Fragment key={st.id}>
                 <div className="relative group/station">
@@ -311,7 +351,7 @@ function ProcessView({
                   )}
                 </div>
                 {i < activeStations.length - 1 && (
-                  <svg width={stationSpacing} height="16" className="shrink-0 mt-[101px] overflow-visible">
+                  <svg width={stationSpacing} height="16" className="shrink-0 mt-[132px] overflow-visible">
                     <line x1="0" y1="8" x2={stationSpacing} y2="8" stroke="#0891b2" strokeWidth="1.5" opacity="0.6" />
                     {stationSpacing >= 30 && (
                       <g transform={`translate(${stationSpacing / 2}, 8)`} style={{ filter: 'drop-shadow(0 0 5px #22d3ee)' }}>
@@ -1105,7 +1145,7 @@ export function StationOperationDialog({ open, onClose, station, currentAsset, o
                 className={`${isFullscreen ? 'absolute inset-0 z-[200] bg-[#05080d] border border-cyan-500/50 rounded-xl' : 'lg:col-span-6 border border-[#1e3a5f]/60 bg-[#05080d]/50 rounded-xl relative'} p-4 flex flex-col transition-all duration-300`}
               >
                 <h5 className="text-[10px] uppercase tracking-wider text-cyan-500 font-bold">ESTADO DE LA MÁQUINA</h5>
-                <div className="flex-1 relative mt-2 flex items-center justify-center min-h-[260px] h-full">
+                <div className="flex-1 relative mt-2 flex items-center justify-center min-h-[260px] h-full" style={{ perspective: '1000px' }}>
                   <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/10 to-transparent pointer-events-none rounded-lg" />
                   {isModel ? (
                     <>
@@ -1118,17 +1158,6 @@ export function StationOperationDialog({ open, onClose, station, currentAsset, o
                           {isAutoRotating ? <RotateCw size={16} /> : <X size={16} />}
                         </button>
                         <button
-                          onClick={() => {
-                            if (modelRef.current) {
-                              modelRef.current.cameraOrbit = "0deg 80deg 105%";
-                            }
-                          }}
-                          className="p-2 rounded-md text-slate-400 hover:text-cyan-400 transition-colors"
-                          title="Regresar a vista original"
-                        >
-                          <Minimize2 size={16} />
-                        </button>
-                        <button
                           onClick={() => setIsFullscreen(!isFullscreen)}
                           className={`p-2 rounded-md transition-colors ${isFullscreen ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-400 hover:text-cyan-400'}`}
                           title="Pantalla Completa"
@@ -1136,19 +1165,36 @@ export function StationOperationDialog({ open, onClose, station, currentAsset, o
                           <Maximize2 size={16} />
                         </button>
                       </div>
-                      <model-viewer
-                        ref={modelRef}
-                        src={assetUrl}
-                        alt={stationName}
-                        auto-rotate={isAutoRotating ? "" : undefined}
-                        rotation-per-second={rotationPerSecond}
-                        camera-controls
-                        interaction-prompt="none"
-                        style={{ width: '100%', height: '100%', background: 'transparent', filter: filterStyle }}
+                      <SingleMachineViewer3D
+                        url={assetUrl}
+                        stateColor="#22d3ee"
+                        isAutoRotating={isAutoRotating}
                       />
                     </>
                   ) : (
-                    <img src={assetUrl} alt={stationName} className="max-h-full object-contain" style={{ filter: filterStyle }} />
+                    <>
+                      {/* 2D Image fallback floor grid */}
+                      <div 
+                        className="absolute pointer-events-none select-none z-0"
+                        style={{
+                          top: '68%',
+                          left: '50%',
+                          width: '460px',
+                          height: '160px',
+                          transform: 'translate(-50%, -50%) rotateX(78deg)',
+                          transformOrigin: '50% 50%',
+                          background: `
+                            linear-gradient(to right, rgba(34,211,238,0.3) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(34,211,238,0.3) 1px, transparent 1px)
+                          `,
+                          backgroundSize: '20px 20px',
+                          border: '1px solid rgba(34,211,238,0.6)',
+                          boxShadow: '0 0 30px rgba(34,211,238,0.2), inset 0 0 20px rgba(34,211,238,0.15)',
+                          borderRadius: '4px'
+                        }}
+                      />
+                      <img src={assetUrl} alt={stationName} className="max-h-full object-contain relative z-10" style={{ filter: filterStyle }} />
+                    </>
                   )}
                   
                   {/* Overlay tags for effect */}
@@ -1303,10 +1349,16 @@ export function StationOperationDialog({ open, onClose, station, currentAsset, o
   );
 }
 
-export function StationAssetEditorDialog({ open, onClose, station, currentAsset, onSave, onReset, editorMode }) {
+export function StationAssetEditorDialog(props) {
+  const { open, station, editorMode } = props;
+  if (!open || !station) return null;
   if (!editorMode) {
-    return <StationOperationDialog open={open} onClose={onClose} station={station} currentAsset={currentAsset} onSave={onSave} />;
+    return <StationOperationDialog {...props} />;
   }
+  return <StationAssetEditorContent {...props} />;
+}
+
+function StationAssetEditorContent({ open, onClose, station, currentAsset, onSave, onReset }) {
   const [assetType, setAssetType] = useState(currentAsset?.type || 'image');
   const [assetValue, setAssetValue] = useState(currentAsset?.value || '');
   const [urlInput, setUrlInput] = useState(currentAsset?.value && !currentAsset.value.startsWith('data:') ? currentAsset.value : '');
@@ -1357,8 +1409,6 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
   }, [onClose]);
-
-  if (!open || !station) return null;
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -1618,6 +1668,26 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
                 <div className="space-y-2 border-t pt-4" style={{ borderColor: 'rgba(30,58,95,0.4)' }}>
                   <label className="block text-xs uppercase tracking-wider text-cyan-500 font-bold">Vista Previa</label>
                   <div className="rounded-lg p-2 flex items-center justify-center border shadow-inner overflow-hidden relative" style={{ borderColor: 'rgba(30,58,95,0.6)', background: 'rgba(5,8,13,0.7)', minHeight: '140px', perspective: '1000px' }}>
+                    {/* 3D Floor Grid Plane */}
+                    <div 
+                      className="absolute bottom-2 left-1/2 -translate-x-1/2 pointer-events-none select-none z-0"
+                      style={{
+                        width: '130px',
+                        height: '50px',
+                        transform: 'rotateX(68deg)',
+                        background: `
+                          linear-gradient(to right, rgba(34,211,238,0.25) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(34,211,238,0.25) 1px, transparent 1px)
+                        `,
+                        backgroundSize: '12px 12px',
+                        border: '1px solid rgba(34,211,238,0.5)',
+                        boxShadow: '0 0 16px rgba(34,211,238,0.2)',
+                        borderRadius: '4px'
+                      }}
+                    >
+                      <div className="absolute top-1/2 left-0 right-0 h-px bg-cyan-400/60" />
+                      <div className="absolute left-1/2 top-0 bottom-0 w-px bg-cyan-400/60" />
+                    </div>
                     {assetType === 'image' ? (
                       <img
                         src={assetValue}
@@ -1632,6 +1702,9 @@ export function StationAssetEditorDialog({ open, onClose, station, currentAsset,
                           alt="Preview 3D"
                           auto-rotate={rotate ? "" : undefined}
                           camera-controls
+                          camera-orbit="0deg 80deg 105%"
+                          min-camera-orbit="-Infinity 80deg 70%"
+                          max-camera-orbit="Infinity 80deg 140%"
                           interaction-prompt="none"
                           style={{
                             width: '130px',
@@ -2278,7 +2351,7 @@ export function CadSandboxOverlay({
                             transform: elementTransform
                           }}
                         >
-                          {/* Holographic Glowing Platform */}
+                          {/* Holographic Glowing Platform with 3D Floor Grid */}
                           <div 
                             className="absolute bottom-1 w-36 h-12 rounded-full blur-[3px] animate-pulse"
                             style={{
@@ -2287,14 +2360,25 @@ export function CadSandboxOverlay({
                             }}
                           />
                           <div 
-                            className="absolute bottom-1 w-32 h-10 rounded-full border"
+                            className="absolute bottom-1 w-36 h-14 pointer-events-none select-none rounded border"
                             style={{
-                              borderColor: `${themeConfig.glowColor}88`,
-                              boxShadow: `0 0 16px ${themeConfig.glowColor}44`,
-                              background: 'rgba(5,8,13,0.4)',
+                              borderColor: `${themeConfig.glowColor}aa`,
+                              boxShadow: `0 0 20px ${themeConfig.glowColor}55, inset 0 0 14px ${themeConfig.glowColor}33`,
+                              background: `
+                                linear-gradient(to right, ${themeConfig.glowColor}44 1px, transparent 1px),
+                                linear-gradient(to bottom, ${themeConfig.glowColor}44 1px, transparent 1px)
+                              `,
+                              backgroundSize: '12px 12px',
                               transform: 'rotateX(75deg) translateZ(0px)'
                             }}
-                          />
+                          >
+                            <div className="absolute top-1/2 left-0 right-0 h-px" style={{ background: `${themeConfig.glowColor}dd` }} />
+                            <div className="absolute left-1/2 top-0 bottom-0 w-px" style={{ background: `${themeConfig.glowColor}dd` }} />
+                            <div className="absolute -top-1 -left-1 w-2.5 h-2.5 border-t-2 border-l-2" style={{ borderColor: themeConfig.glowColor }} />
+                            <div className="absolute -top-1 -right-1 w-2.5 h-2.5 border-t-2 border-r-2" style={{ borderColor: themeConfig.glowColor }} />
+                            <div className="absolute -bottom-1 -left-1 w-2.5 h-2.5 border-b-2 border-l-2" style={{ borderColor: themeConfig.glowColor }} />
+                            <div className="absolute -bottom-1 -right-1 w-2.5 h-2.5 border-b-2 border-r-2" style={{ borderColor: themeConfig.glowColor }} />
+                          </div>
 
                           {/* Model Viewport / Image billboard */}
                           {/* The outer div carries the CSS filter; model-viewer is inside so the
@@ -2732,6 +2816,436 @@ export function CadSandboxOverlay({
           </div>
         )}
       </motion.div>
+    </AnimatePresence>
+  );
+}
+
+/* ---------------- Matrix Decode Line Component ---------------- */
+function MatrixDecodeLine({ text, isLast, delay = 0 }) {
+  const [displayText, setDisplayText] = useState('');
+  const [completed, setCompleted] = useState(false);
+  const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#$&%*@!~?<>';
+
+  useEffect(() => {
+    let timeoutId;
+    let intervalId;
+
+    timeoutId = setTimeout(() => {
+      let step = 0;
+      const targetLength = text.length;
+      const stepsPerChar = 3;
+      const maxSteps = targetLength * stepsPerChar;
+
+      intervalId = setInterval(() => {
+        setDisplayText(() => {
+          return text
+            .split('')
+            .map((char, idx) => {
+              if (char === ' ' || char === '\n') return char;
+              const solvedChars = Math.floor(step / stepsPerChar);
+              if (idx < solvedChars) {
+                return text[idx];
+              }
+              return CHARS[Math.floor(Math.random() * CHARS.length)];
+            })
+            .join('');
+        });
+
+        step += 1;
+        if (step >= maxSteps) {
+          clearInterval(intervalId);
+          setDisplayText(text);
+          setCompleted(true);
+        }
+      }, 32);
+    }, delay);
+
+    return () => {
+      clearTimeout(timeoutId);
+      clearInterval(intervalId);
+    };
+  }, [text, delay]);
+
+  const isAutomate = isLast || text.toUpperCase().includes('AUTOMATE');
+
+  return (
+    <div className="flex items-center justify-center gap-2 flex-wrap">
+      <span
+        className={isAutomate ? 'font-black' : 'text-slate-100 font-extrabold'}
+        style={
+          isAutomate
+            ? {
+                color: '#0055ff',
+                backgroundImage: 'linear-gradient(90deg, #00d2ff 0%, #0055ff 45%, #0044ff 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                filter: 'drop-shadow(0 0 30px rgba(0, 85, 255, 0.9))',
+              }
+            : {}
+        }
+      >
+        {displayText}
+      </span>
+      {isLast && completed && (
+        <motion.span
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 450, damping: 14 }}
+          className="inline-block w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-[#0055ff] shadow-[0_0_22px_#0055ff] animate-pulse"
+        />
+      )}
+    </div>
+  );
+}
+
+/* ---------------- Home Hero Landing View ---------------- */
+export function HomeHeroView({ editorMode, heroConfig, onSaveHeroConfig, onNavigate }) {
+  const [showEditDialog, setShowEditDialog] = useState(false);
+
+  const defaultVideo = 'https://assets.mixkit.co/videos/preview/mixkit-robotic-arm-in-a-factory-43251-large.mp4';
+
+  const videoUrl = heroConfig?.videoUrl || defaultVideo;
+  const videoOpacity = heroConfig?.videoOpacity !== undefined ? heroConfig.videoOpacity : 0.4;
+  const badge = heroConfig?.badge || 'PLATAFORMA INDUSTRIAL 4.0';
+  const title = heroConfig?.title || 'THINK.\nDESIGN.\nAUTOMATE.';
+  const subtitle = heroConfig?.subtitle || 'Gemelo Digital 3D, Inteligencia Artificial y Monitoreo en Tiempo Real para la Maximización Operativa.';
+
+  const lines = title.split('\n');
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="relative min-h-[calc(100vh-130px)] flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-800 bg-[#05080d]"
+    >
+      {/* Hero Video Background - Loads & Plays Immediately */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+        {videoUrl ? (
+          <video
+            key={videoUrl}
+            src={videoUrl}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            style={{ opacity: videoOpacity }}
+            className="w-full h-full object-cover filter contrast-125 saturate-110 scale-105"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-blue-950/50 via-[#05080d] to-cyan-950/50" />
+        )}
+        
+        {/* Ambient Dark Gradients & Grid Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#05080d] via-[#05080d]/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#05080d] via-[#05080d]/40 to-[#05080d]" />
+        <div 
+          className="absolute inset-0 opacity-20 pointer-events-none" 
+          style={{ 
+            backgroundImage: 'linear-gradient(rgba(0,140,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(0,140,255,0.15) 1px, transparent 1px)', 
+            backgroundSize: '60px 60px' 
+          }} 
+        />
+      </div>
+
+      {/* Editor Trigger Overlay Badge */}
+      {editorMode && (
+        <div className="absolute top-4 right-4 z-20">
+          <button
+            onClick={() => setShowEditDialog(true)}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-blue-500/20 border border-blue-400/60 text-blue-300 text-xs font-bold uppercase tracking-wider hover:bg-blue-500 hover:text-white transition-all shadow-[0_0_15px_rgba(0,102,255,0.4)] pointer-events-auto"
+          >
+            <Edit size={14} /> Editar Hero (Video y Textos)
+          </button>
+        </div>
+      )}
+
+      {/* Main Hero Content */}
+      <div className="relative z-10 flex-1 flex flex-col justify-center items-center text-center px-4 py-16 max-w-5xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/30 text-blue-300 text-[11px] font-bold uppercase tracking-widest mb-8 shadow-[0_0_12px_rgba(0,102,255,0.2)]"
+        >
+          <Sparkles size={13} className="animate-pulse text-blue-400" />
+          <span>{badge}</span>
+        </motion.div>
+
+        {/* Big Impactful Title with Sequential Matrix Decode */}
+        <h1 className="scr-display font-black tracking-tight text-white uppercase text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.9] text-center select-none space-y-1">
+          {lines.map((lineText, idx) => {
+            const isLast = idx === lines.length - 1;
+            const lineDelay = 150 + idx * 450;
+            return (
+              <MatrixDecodeLine
+                key={idx + '-' + lineText}
+                text={lineText}
+                isLast={isLast}
+                delay={lineDelay}
+              />
+            );
+          })}
+        </h1>
+
+        {/* Decorative Divider Line */}
+        <motion.div
+          initial={{ width: 0, opacity: 0 }}
+          animate={{ width: '90px', opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="h-1.5 rounded-full my-6 shadow-[0_0_15px_#0055ff]"
+          style={{ background: 'linear-gradient(90deg, #00d2ff 0%, #0055ff 50%, #0044ff 100%)' }}
+        />
+
+        {/* Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.35 }}
+          className="text-slate-300 text-base sm:text-lg md:text-xl font-medium max-w-2xl leading-relaxed text-center drop-shadow-md"
+        >
+          {subtitle}
+        </motion.p>
+
+        {/* Action Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.45 }}
+          className="mt-10 flex flex-wrap items-center justify-center gap-4"
+        >
+          <button
+            onClick={() => onNavigate && onNavigate('control')}
+            className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold text-sm tracking-wider uppercase hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(34,211,238,0.4)]"
+          >
+            Ingresar al Sistema <ArrowRight size={16} />
+          </button>
+
+          <button
+            onClick={() => onNavigate && onNavigate('twin')}
+            className="flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-slate-900/80 border border-slate-700 text-slate-200 font-semibold text-sm tracking-wider uppercase hover:border-cyan-400 hover:text-cyan-300 hover:bg-slate-800 transition-all shadow-lg"
+          >
+            <Box size={16} className="text-cyan-400" /> Gemelo Digital 3D
+          </button>
+        </motion.div>
+      </div>
+
+      {/* Bottom Features Cards Bar */}
+      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 border-t border-slate-800/80 bg-[#05080d]/80 backdrop-blur-md">
+        <div 
+          onClick={() => onNavigate && onNavigate('control')}
+          className="p-3.5 rounded-xl border border-slate-800/80 bg-slate-900/40 hover:border-cyan-500/50 hover:bg-cyan-500/10 cursor-pointer transition-all group"
+        >
+          <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider mb-1">
+            <Activity size={15} /> Centro de Control
+          </div>
+          <p className="text-slate-400 text-xs leading-snug">Monitoreo en tiempo real de OEE, disponibilidad y alertas operativas de planta.</p>
+        </div>
+
+        <div 
+          onClick={() => onNavigate && onNavigate('twin')}
+          className="p-3.5 rounded-xl border border-slate-800/80 bg-slate-900/40 hover:border-cyan-500/50 hover:bg-cyan-500/10 cursor-pointer transition-all group"
+        >
+          <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider mb-1">
+            <Box size={15} /> Gemelo Digital CAD
+          </div>
+          <p className="text-slate-400 text-xs leading-snug">Modelado 3D fidedigno de estaciones de ensamble con rotación y cotas de precisión.</p>
+        </div>
+
+        <div 
+          onClick={() => onNavigate && onNavigate('ai')}
+          className="p-3.5 rounded-xl border border-slate-800/80 bg-slate-900/40 hover:border-cyan-500/50 hover:bg-cyan-500/10 cursor-pointer transition-all group"
+        >
+          <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider mb-1">
+            <Sparkles size={15} /> Inteligencia IA
+          </div>
+          <p className="text-slate-400 text-xs leading-snug">Diagnóstico prescriptivo de fallas y recomendaciones óptimas de proceso.</p>
+        </div>
+      </div>
+
+      {/* Hero Editor Dialog */}
+      <HeroEditorDialog
+        open={showEditDialog}
+        onClose={() => setShowEditDialog(false)}
+        currentConfig={{ videoUrl, videoOpacity, badge, title, subtitle }}
+        onSave={(newCfg) => {
+          onSaveHeroConfig && onSaveHeroConfig(newCfg);
+          setShowEditDialog(false);
+        }}
+      />
+    </motion.div>
+  );
+}
+
+/* ---------------- Hero Editor Dialog ---------------- */
+function HeroEditorDialog({ open, onClose, currentConfig, onSave }) {
+  const [videoUrl, setVideoUrl] = useState(currentConfig?.videoUrl || '');
+  const [videoOpacity, setVideoOpacity] = useState(currentConfig?.videoOpacity !== undefined ? currentConfig.videoOpacity : 0.4);
+  const [badge, setBadge] = useState(currentConfig?.badge || '');
+  const [title, setTitle] = useState(currentConfig?.title || '');
+  const [subtitle, setSubtitle] = useState(currentConfig?.subtitle || '');
+
+  useEffect(() => {
+    if (currentConfig) {
+      setVideoUrl(currentConfig.videoUrl || '');
+      setVideoOpacity(currentConfig.videoOpacity !== undefined ? currentConfig.videoOpacity : 0.4);
+      setBadge(currentConfig.badge || '');
+      setTitle(currentConfig.title || '');
+      setSubtitle(currentConfig.subtitle || '');
+    }
+  }, [currentConfig, open]);
+
+  const handleVideoFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 15 * 1024 * 1024) {
+        alert('El video es demasiado grande para memoria local. Use videos menores a 15MB o un enlace de video web.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setVideoUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSave = () => {
+    onSave({ videoUrl, videoOpacity, badge, title, subtitle });
+  };
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          style={{ background: 'rgba(3,6,12,0.8)', backdropFilter: 'blur(6px)' }}
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ scale: 0.94, y: 12 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-xl rounded-2xl border p-6 text-slate-200"
+            style={{ background: 'var(--scr-panel)', borderColor: 'var(--scr-border)' }}
+          >
+            <div className="flex items-center gap-3 border-b pb-4" style={{ borderColor: 'var(--scr-border)' }}>
+              <div className="rounded-xl p-2.5 bg-cyan-500/10 text-cyan-400">
+                <Video size={22} />
+              </div>
+              <div>
+                <h4 className="scr-display font-bold text-lg text-slate-50">Configurar Hero de Inicio</h4>
+                <p className="text-slate-400 text-xs">Cargue el video de fondo y personalice los títulos y subtítulos.</p>
+              </div>
+            </div>
+
+            <div className="mt-5 space-y-4">
+              {/* Video URL or File Upload */}
+              <div className="space-y-1.5">
+                <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold">Video de Fondo Hero (MP4 / WebM / URL)</label>
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    value={videoUrl}
+                    onChange={(e) => setVideoUrl(e.target.value)}
+                    placeholder="Enlace URL directo a video (e.g. https://.../video.mp4)"
+                    className="w-full rounded-xl border text-slate-200 text-xs p-2.5 outline-none focus:border-cyan-500"
+                    style={{ borderColor: 'var(--scr-border)', background: 'var(--scr-panel-2)' }}
+                  />
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={handleVideoFileChange}
+                      className="hidden"
+                      id="hero-video-file"
+                    />
+                    <label
+                      htmlFor="hero-video-file"
+                      className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-slate-700 py-2.5 px-3 text-xs text-slate-300 hover:text-cyan-400 hover:bg-cyan-500/10 cursor-pointer transition-all"
+                    >
+                      <Upload size={14} /> Cargar Archivo de Video Local (.mp4)
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Transparencia / Opacidad del Video */}
+              <div className="space-y-1.5 p-3 rounded-xl bg-slate-900/50 border border-slate-800">
+                <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-300">
+                  <label>Transparencia / Opacidad del Video</label>
+                  <span className="scr-mono text-cyan-400 font-extrabold">{Math.round(videoOpacity * 100)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0.05"
+                  max="1"
+                  step="0.05"
+                  value={videoOpacity}
+                  onChange={(e) => setVideoOpacity(parseFloat(e.target.value))}
+                  className="w-full h-2 rounded-lg bg-slate-800 accent-cyan-400 cursor-pointer"
+                />
+              </div>
+
+              {/* Badge text */}
+              <div className="space-y-1.5">
+                <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold">Etiqueta Superior (Badge)</label>
+                <input
+                  type="text"
+                  value={badge}
+                  onChange={(e) => setBadge(e.target.value)}
+                  placeholder="e.g. PLATAFORMA INDUSTRIAL 4.0"
+                  className="w-full rounded-xl border text-slate-200 text-xs p-2.5 outline-none focus:border-cyan-500"
+                  style={{ borderColor: 'var(--scr-border)', background: 'var(--scr-panel-2)' }}
+                />
+              </div>
+
+              {/* Hero Title (Multiline) */}
+              <div className="space-y-1.5">
+                <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold">Título Principal (Cada línea en un renglón)</label>
+                <textarea
+                  rows={3}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="THINK.&#10;DESIGN.&#10;AUTOMATE."
+                  className="w-full rounded-xl border text-slate-200 text-xs p-2.5 outline-none focus:border-cyan-500 scr-mono font-bold uppercase tracking-wider"
+                  style={{ borderColor: 'var(--scr-border)', background: 'var(--scr-panel-2)' }}
+                />
+              </div>
+
+              {/* Subtitle */}
+              <div className="space-y-1.5">
+                <label className="block text-xs uppercase tracking-wider text-slate-400 font-bold">Subtítulo / Descripción</label>
+                <textarea
+                  rows={2}
+                  value={subtitle}
+                  onChange={(e) => setSubtitle(e.target.value)}
+                  placeholder="Descripción secundaria..."
+                  className="w-full rounded-xl border text-slate-200 text-xs p-2.5 outline-none focus:border-cyan-500"
+                  style={{ borderColor: 'var(--scr-border)', background: 'var(--scr-panel-2)' }}
+                />
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t flex justify-end gap-2" style={{ borderColor: 'var(--scr-border)' }}>
+              <button
+                onClick={onClose}
+                className="rounded-xl px-4 py-2 text-xs border text-slate-500 border-slate-700 hover:bg-white/5 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSave}
+                className="rounded-xl px-5 py-2 text-xs text-[#05080d] font-bold bg-gradient-to-r from-cyan-400 to-blue-500 hover:scale-105 active:scale-95 transition-all shadow-md"
+              >
+                Guardar Hero
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 }

@@ -6,7 +6,7 @@ import {
   BellRing, LineChart, Sparkles, Calculator, Wrench, Zap, FileText,
   Users, Settings, Menu, ChevronLeft, ChevronDown, Clock,
   Server, Database, Gauge, MessageSquare, AlertTriangle, CircleDot,
-  Sun, Moon, Lock, Unlock, Upload, Trash2, Image, Edit,
+  Sun, Moon, Lock, Unlock, Upload, Trash2, Image, Edit, Home,
 } from 'lucide-react';
 import { PLANTS, LINES, SHIFTS, ALARMS } from './data';
 import { Dot } from './ui';
@@ -14,12 +14,14 @@ import MachinePanel from './MachinePanel';
 import {
   DashboardView, TwinView, MachinesView, AnalyticsView, IntelligenceView,
   ParametricsView, AlarmsView, MaintenanceView, EnergyView, ReportsView,
-  PlantsView, UsersView, GenericView
+  PlantsView, UsersView, GenericView, HomeHeroView
 } from './views';
 import { CadSandboxOverlay } from './CadSandboxViewer3D';
 import { getSettings, setSetting, removeSetting } from '../utils/supabase/settings';
+import { idbGet } from '../utils/supabase/idb';
 
 const NAV = [
+  { id: 'home', label: 'Inicio', icon: Home },
   { id: 'control', label: 'Centro de Control', icon: LayoutDashboard },
   { id: 'plants', label: 'Plantas', icon: Factory },
   { id: 'machines', label: 'Máquinas', icon: Cpu },
@@ -37,34 +39,155 @@ const NAV = [
 
 const TITLES = Object.fromEntries(NAV.map((n) => [n.id, n.label]));
 
-function TopSelect({ label, icon: Icon, value, options, onChange }) {
+function PlantSelectorDropdown({ plant, setPlant, line, setLine, shift, setShift }) {
   const [open, setOpen] = useState(false);
+
+  const plantShort = (plant || '').split('—')[0].trim();
+  const lineShort = (line || '').split('—')[0].trim();
+  const shiftShort = (shift || '').split('(')[0].trim();
+
   return (
     <div className="relative">
-      <button onClick={() => setOpen((o) => !o)} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-white/5" style={{ border: '1px solid var(--scr-border)' }}>
-        {Icon && <Icon size={15} className="text-slate-500 shrink-0" />}
-        <span className="text-left leading-tight">
-          <span className="block text-[9px] uppercase tracking-wide text-slate-500">{label}</span>
-          <span className="block text-[12px] text-slate-200 max-w-[150px] truncate">{value}</span>
-        </span>
-        <ChevronDown size={13} className="text-slate-500" />
-      </button>
-      {open && (
-        <>
-          <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
-          <div className="absolute z-40 mt-1 min-w-full rounded-lg border py-1 shadow-xl left-0" style={{ background: 'var(--scr-panel)', borderColor: 'var(--scr-border)' }}>
-            {options.map((o) => (
-              <button key={o} onClick={() => { onChange(o); setOpen(false); }} className="block w-full text-left px-3 py-1.5 text-[12px] text-slate-300 hover:bg-white/5 whitespace-nowrap">{o}</button>
-            ))}
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border bg-slate-900/60 hover:bg-cyan-500/10 hover:border-cyan-400/50 transition-all shadow-sm group"
+        style={{ borderColor: open ? '#22d3ee' : 'var(--scr-border)' }}
+        title="Configurar Planta, Línea y Turno"
+      >
+        <div className="p-1 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20">
+          <Factory size={16} />
+        </div>
+        <div className="text-left leading-tight">
+          <div className="text-[9px] font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1">
+            <span>Ubicación y Operación</span>
           </div>
-        </>
-      )}
+          <div className="text-[12px] font-semibold text-slate-100 flex items-center gap-1">
+            <span>{plantShort}</span>
+            <span className="text-slate-500">·</span>
+            <span className="text-slate-300">{lineShort}</span>
+            <span className="text-slate-500">·</span>
+            <span className="text-slate-400 text-[11px]">{shiftShort}</span>
+          </div>
+        </div>
+        <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ml-1 ${open ? 'rotate-180 text-cyan-400' : ''}`} />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <>
+            <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+            <motion.div
+              initial={{ opacity: 0, y: 8, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 6, scale: 0.96 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              className="absolute left-0 mt-2 z-50 w-80 rounded-2xl border bg-[#070d18]/96 border-cyan-500/30 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.8)] backdrop-blur-xl space-y-4"
+            >
+              <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider">
+                  <Factory size={15} /> Selectores de Planta
+                </div>
+                <span className="text-[9px] bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-500/30 font-semibold">
+                  SCR700 TWIN
+                </span>
+              </div>
+
+              {/* Selector 1: Planta */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <Factory size={13} className="text-cyan-400" /> Planta Industrial
+                </label>
+                <div className="space-y-1">
+                  {PLANTS.map((p) => {
+                    const selected = plant === p.name;
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => setPlant(p.name)}
+                        className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-all ${
+                          selected
+                            ? 'bg-cyan-500/20 border border-cyan-400/50 text-cyan-200 font-semibold shadow-[0_0_10px_rgba(34,211,238,0.15)]'
+                            : 'bg-slate-900/50 border border-slate-800 text-slate-300 hover:bg-slate-800/80 hover:text-white'
+                        }`}
+                      >
+                        <span>{p.name}</span>
+                        {selected && <span className="h-2 w-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Selector 2: Línea */}
+              <div className="space-y-1.5 border-t border-slate-800/80 pt-3">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <Cpu size={13} className="text-cyan-400" /> Línea de Proceso
+                </label>
+                <div className="grid grid-cols-1 gap-1">
+                  {LINES.map((l) => {
+                    const selected = line === l;
+                    return (
+                      <button
+                        key={l}
+                        onClick={() => setLine(l)}
+                        className={`text-left px-3 py-1.5 rounded-lg text-xs flex items-center justify-between transition-all ${
+                          selected
+                            ? 'bg-cyan-500/20 border border-cyan-400/50 text-cyan-200 font-semibold'
+                            : 'bg-slate-900/40 border border-slate-800/60 text-slate-300 hover:bg-slate-800/80'
+                        }`}
+                      >
+                        <span>{l}</span>
+                        {selected && <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Selector 3: Turno */}
+              <div className="space-y-1.5 border-t border-slate-800/80 pt-3">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <Clock size={13} className="text-cyan-400" /> Turno Operativo
+                </label>
+                <div className="grid grid-cols-1 gap-1">
+                  {SHIFTS.map((s) => {
+                    const selected = shift === s;
+                    return (
+                      <button
+                        key={s}
+                        onClick={() => setShift(s)}
+                        className={`text-left px-3 py-1.5 rounded-lg text-xs flex items-center justify-between transition-all ${
+                          selected
+                            ? 'bg-cyan-500/20 border border-cyan-400/50 text-cyan-200 font-semibold'
+                            : 'bg-slate-900/40 border border-slate-800/60 text-slate-300 hover:bg-slate-800/80'
+                        }`}
+                      >
+                        <span>{s}</span>
+                        {selected && <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-slate-800/80 flex justify-end">
+                <button
+                  onClick={() => setOpen(false)}
+                  className="px-3 py-1 rounded-lg bg-cyan-500 text-slate-950 text-[11px] font-bold uppercase tracking-wider hover:bg-cyan-400 transition-colors shadow"
+                >
+                  Listo
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
 export default function Scr700App() {
-  const [active, setActive] = useState('control');
+  const [active, setActive] = useState('home');
   const [collapsed, setCollapsed] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
   const [machine, setMachine] = useState(null);
@@ -74,6 +197,20 @@ export default function Scr700App() {
   const [theme, setTheme] = useState(() => {
     if (typeof window === 'undefined') return 'dark';
     return window.localStorage.getItem('scr700-theme') || 'dark';
+  });
+
+  const [heroConfig, setHeroConfig] = useState(() => {
+    if (typeof window === 'undefined') return {};
+    const val = window.localStorage.getItem('scr700-hero-config');
+    if (val) {
+      try { return JSON.parse(val); } catch (e) {}
+    }
+    return {
+      videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-robotic-arm-in-a-factory-43251-large.mp4',
+      badge: 'PLATAFORMA INDUSTRIAL 4.0',
+      title: 'THINK.\nDESIGN.\nAUTOMATE.',
+      subtitle: 'Gemelo Digital 3D, Inteligencia Artificial y Monitoreo en Tiempo Real para la Maximización Operativa.'
+    };
   });
 
   const [editorMode, setEditorMode] = useState(false);
@@ -126,9 +263,34 @@ export default function Scr700App() {
     backlight: true
   });
 
-  // Load all settings asynchronously from Supabase on mount
+  // Load all settings asynchronously from Supabase & IndexedDB cache on mount
   useEffect(() => {
     async function loadAllSettings() {
+      const ids = ['win', 's01', 's02', 's03', 's04', 's05', 'wout'];
+      const defaultMetadata = {
+        s01: { metadata: { capacityValue: '950', capacityUnit: 'kg/h' } },
+        s03: { metadata: { capacityValue: '300', capacityUnit: 'u/h', power: true, water: true } }
+      };
+
+      // Fast-pass: load instantly from IndexedDB disk cache
+      try {
+        const fastAssets = { ...defaultMetadata };
+        let hasFast = false;
+        for (const id of ids) {
+          const cached = await idbGet(`scr700-station-asset-${id}`);
+          if (cached) {
+            try {
+              fastAssets[id] = JSON.parse(cached);
+              hasFast = true;
+            } catch (e) {}
+          }
+        }
+        if (hasFast) {
+          setStationAssets(fastAssets);
+        }
+      } catch (e) {}
+
+      // Full-pass: fetch latest settings from Supabase
       const settings = await getSettings();
       if (settings['scr700-theme']) {
         setTheme(settings['scr700-theme']);
@@ -142,6 +304,13 @@ export default function Scr700App() {
       if (settings['scr700-logo-size']) {
         setLogoSize(parseInt(settings['scr700-logo-size'], 10) || 128);
       }
+      if (settings['scr700-hero-config']) {
+        try {
+          setHeroConfig(JSON.parse(settings['scr700-hero-config']));
+        } catch (e) {
+          console.error(e);
+        }
+      }
       if (settings['scr700-studio-settings']) {
         try {
           setStudioSettings(JSON.parse(settings['scr700-studio-settings']));
@@ -150,8 +319,7 @@ export default function Scr700App() {
         }
       }
       
-      const assets = {};
-      const ids = ['win', 's01', 's02', 's03', 's04', 's05', 'wout'];
+      const assets = { ...defaultMetadata };
       for (const id of ids) {
         const val = settings[`scr700-station-asset-${id}`];
         if (val) {
@@ -220,6 +388,11 @@ export default function Scr700App() {
     });
   };
 
+  const handleSaveHeroConfig = async (cfg) => {
+    setHeroConfig(cfg);
+    await setSetting('scr700-hero-config', JSON.stringify(cfg));
+  };
+
   const handleResetAllAssets = async () => {
     if (window.confirm("¿Seguro que deseas restablecer todos los modelos y configuraciones 3D a sus valores de fábrica?")) {
       const ids = ['win', 's01', 's02', 's03', 's04', 's05', 'wout'];
@@ -235,6 +408,15 @@ export default function Scr700App() {
 
   const render = () => {
     switch (active) {
+      case 'home':
+        return (
+          <HomeHeroView
+            editorMode={editorMode}
+            heroConfig={heroConfig}
+            onSaveHeroConfig={handleSaveHeroConfig}
+            onNavigate={(targetView) => setActive(targetView)}
+          />
+        );
       case 'control': 
         return (
           <DashboardView 
@@ -288,34 +470,63 @@ export default function Scr700App() {
       <Helmet><title>SCR700 — Inteligencia Industrial y Sistema de Control</title></Helmet>
 
       {/* Sidebar desktop */}
-      <aside className={`hidden lg:flex flex-col border-r transition-all duration-300 ${collapsed ? 'w-[68px]' : 'w-64'}`} style={{ background: 'var(--scr-graphite)', borderColor: 'var(--scr-border)' }}>
+      <aside className={`hidden lg:flex flex-col border-r transition-all duration-300 relative ${collapsed ? 'w-[68px]' : 'w-64'}`} style={{ background: 'var(--scr-graphite)', borderColor: 'var(--scr-border)' }}>
         <div 
-          onClick={editorMode ? () => setShowLogoModal(true) : undefined}
-          title={editorMode ? 'Configurar logotipos del sistema' : undefined}
-          className={`flex items-center justify-center w-full border-b transition-all relative ${editorMode ? 'cursor-pointer hover:bg-cyan-500/10 group' : ''}`} 
+          className="flex items-center justify-between border-b px-3 relative" 
           style={{ borderColor: 'var(--scr-border)', height: '78px' }}
         >
           <div 
-            className="absolute flex items-center justify-center"
-            style={{ width: `${logoSize}px`, height: `${logoSize}px`, top: '50%', transform: 'translateY(-50%)' }}
+            onClick={editorMode ? () => setShowLogoModal(true) : undefined}
+            title={editorMode ? 'Configurar logotipos del sistema' : undefined}
+            className={`flex items-center justify-center flex-1 transition-all relative ${editorMode ? 'cursor-pointer hover:bg-cyan-500/10 group' : ''}`} 
           >
-            {currentLogo ? (
-              <img src={currentLogo} alt="Logo" className="object-contain rounded-lg shrink-0" style={{ width: `${logoSize}px`, height: `${logoSize}px` }} />
-            ) : (
-              <div className="grid place-items-center rounded-lg shrink-0" style={{ background: 'linear-gradient(135deg,#22d3ee,#3b82f6)', width: `${logoSize}px`, height: `${logoSize}px` }}>
-                <CircleDot size={Math.round(logoSize * 0.53)} color="#05080d" />
-              </div>
-            )}
-            {editorMode && (
-              <div className="absolute inset-0 bg-[#05080d]/70 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <Edit size={Math.round(logoSize * 0.33)} className="text-cyan-400" />
-              </div>
-            )}
+            <div 
+              className="flex items-center justify-center"
+              style={{ width: collapsed ? '40px' : `${logoSize}px`, height: collapsed ? '40px' : `${logoSize}px` }}
+            >
+              {currentLogo ? (
+                <img src={currentLogo} alt="Logo" className="object-contain rounded-lg shrink-0" style={{ width: collapsed ? '40px' : `${logoSize}px`, height: collapsed ? '40px' : `${logoSize}px` }} />
+              ) : (
+                <div className="grid place-items-center rounded-lg shrink-0 shadow-[0_0_15px_rgba(0,210,255,0.4)]" style={{ background: 'linear-gradient(135deg, #22d3ee 0%, #00d2ff 50%, #0284c7 100%)', width: collapsed ? '36px' : `${logoSize}px`, height: collapsed ? '36px' : `${logoSize}px` }}>
+                  <CircleDot size={collapsed ? 20 : Math.round(logoSize * 0.53)} color="#05080d" />
+                </div>
+              )}
+              {editorMode && !collapsed && (
+                <div className="absolute inset-0 bg-[#05080d]/70 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Edit size={Math.round(logoSize * 0.33)} className="text-cyan-400" />
+                </div>
+              )}
+            </div>
           </div>
+
+          {/* Floating Collapse Tab on Top Right Edge of Sidebar */}
+          {!collapsed && (
+            <button
+              onClick={() => setCollapsed(true)}
+              className="absolute -right-3 top-6 z-20 grid place-items-center h-7 w-7 rounded-full border bg-slate-900 border-cyan-500/50 text-cyan-400 hover:text-white hover:bg-cyan-500/20 shadow-[0_0_12px_rgba(34,211,238,0.4)] transition-all hover:scale-110"
+              title="Minimizar / Contraer Panel Lateral"
+            >
+              <ChevronLeft size={15} />
+            </button>
+          )}
         </div>
+
         <NavList />
-        <button onClick={() => setCollapsed((c) => !c)} className="flex items-center gap-2 px-4 py-3 border-t text-slate-500 hover:text-slate-300 text-[12px]" style={{ borderColor: 'var(--scr-border)' }}>
-          <ChevronLeft size={16} className={`transition-transform ${collapsed ? 'rotate-180' : ''}`} />{!collapsed && 'Contraer'}
+        
+        {/* Bottom Expand/Collapse Button Tab */}
+        <button 
+          onClick={() => setCollapsed((c) => !c)} 
+          className={`flex items-center gap-2 px-3 py-3 border-t text-slate-400 hover:text-cyan-300 hover:bg-white/5 transition-all text-[12px] ${collapsed ? 'justify-center' : 'justify-between'}`} 
+          style={{ borderColor: 'var(--scr-border)' }}
+          title={collapsed ? 'Expandir Panel' : 'Minimizar / Contraer Panel'}
+        >
+          <div className="flex items-center gap-2">
+            <ChevronLeft size={16} className={`transition-transform duration-300 ${collapsed ? 'rotate-180 text-cyan-400' : ''}`} />
+            {!collapsed && <span className="font-bold uppercase tracking-wider text-[10px] text-slate-300">Minimizar Panel</span>}
+          </div>
+          {!collapsed && (
+            <span className="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700 font-mono">OCULTAR</span>
+          )}
         </button>
       </aside>
 
@@ -360,12 +571,24 @@ export default function Scr700App() {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
         <header className="shrink-0 flex items-center gap-2 px-3 border-b" style={{ background: 'var(--scr-graphite)', borderColor: 'var(--scr-border)', height: '78px' }}>
+          {/* Desktop Toggle Sidebar Tab */}
+          <button 
+            onClick={() => setCollapsed(c => !c)} 
+            className="hidden lg:grid place-items-center h-8 w-8 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 border transition-all mr-1"
+            style={{ borderColor: 'var(--scr-border)' }}
+            title={collapsed ? "Expandir Panel Lateral" : "Minimizar Panel Lateral"}
+          >
+            <Menu size={18} className={collapsed ? "text-cyan-400 animate-pulse" : ""} />
+          </button>
+
           <button className="lg:hidden text-slate-400 p-1" onClick={() => setMobileNav(true)}><Menu size={20} /></button>
           <h1 className="scr-display font-semibold text-slate-100 text-[15px] mr-2 hidden sm:block">{TITLES[active]}</h1>
           <div className="hidden md:flex items-center gap-2">
-            <TopSelect label="Planta" icon={Factory} value={plant} options={PLANTS.map((p) => p.name)} onChange={setPlant} />
-            <TopSelect label="Línea" icon={Cpu} value={line} options={LINES} onChange={setLine} />
-            <TopSelect label="Turno" icon={Clock} value={shift} options={SHIFTS} onChange={setShift} />
+            <PlantSelectorDropdown
+              plant={plant} setPlant={setPlant}
+              line={line} setLine={setLine}
+              shift={shift} setShift={setShift}
+            />
           </div>
           <div className="ml-auto flex items-center gap-4">
             <button

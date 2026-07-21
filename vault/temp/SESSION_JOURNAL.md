@@ -4224,3 +4224,598 @@
 ## 2026-07-20 06:16:18.695Z click
 - element: {"tag":"button","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
 
+## 2026-07-20 06:17:08.369Z click
+- element: {"tag":"div","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":" VER EQUIPO"}
+
+## 2026-07-20 06:17:10.061Z click
+- element: {"tag":"button","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-20 06:17:12.824Z click
+- element: {"tag":"model-viewer","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-20 06:17:16.646Z click
+- element: {"tag":"model-viewer","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-20 06:17:18.068Z click
+- element: {"tag":"model-viewer","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-20 06:17:20.853Z click
+- element: {"tag":"model-viewer","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-20 06:17:22.429Z click
+- element: {"tag":"model-viewer","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-20 15:27:52.691Z load
+- url: http://localhost:3000/
+
+## 2026-07-20 15:27:52.843Z console.warn
+- text: THREE.WARNING: Multiple instances of Three.js being imported.
+
+## 2026-07-20 15:28:00.597Z console.warn
+- text: Could not sync setting scr700-station-asset-1 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-1' exceeded the quota.
+
+## 2026-07-20 15:28:00.600Z console.warn
+- text: Could not sync setting scr700-station-asset-s01 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s01' exceeded the quota.
+
+## 2026-07-20 15:28:00.604Z console.warn
+- text: Could not sync setting scr700-station-asset-s02 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s02' exceeded the quota.
+
+## 2026-07-20 15:28:00.605Z console.warn
+- text: Could not sync setting scr700-station-asset-s03 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s03' exceeded the quota.
+
+## 2026-07-20 15:28:05.357Z click
+- element: {"tag":"div","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-21 03:09:30.631Z load
+- url: http://localhost:3000/
+
+## 2026-07-21 03:09:40.192Z console.warn
+- text: THREE.WARNING: Multiple instances of Three.js being imported.
+
+## 2026-07-21 03:09:54.311Z console.warn
+- text: Could not sync setting scr700-station-asset-1 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-1' exceeded the quota.
+
+## 2026-07-21 03:09:54.318Z console.warn
+- text: Could not sync setting scr700-station-asset-s01 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s01' exceeded the quota.
+
+## 2026-07-21 03:09:54.325Z console.warn
+- text: Could not sync setting scr700-station-asset-s02 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s02' exceeded the quota.
+
+## 2026-07-21 03:09:54.328Z console.warn
+- text: Could not sync setting scr700-station-asset-s03 to localStorage (quota exceeded): Failed to execute 'setItem' on 'Storage': Setting the value of 'scr700-station-asset-s03' exceeded the quota.
+
+## 2026-07-21 03:50:01.598Z load
+- url: http://localhost:3000/
+
+## 2026-07-21 03:50:01.796Z console.warn
+- text: THREE.WARNING: Multiple instances of Three.js being imported.
+
+## 2026-07-21 03:50:08.257Z click
+- element: {"tag":"button","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-21 03:50:08.287Z window.error
+- message: Uncaught ReferenceError: Circle is not defined
+- source: http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784605740465
+- line: 2843
+- col: 46
+- stack: 
+    ReferenceError: Circle is not defined
+        at CadSandboxOverlay (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784605740465:2843:46)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:11596:26)
+        at updateFunctionComponent (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:14630:28)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:15972:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3680:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3705:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3739:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19818:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19190:13)
+
+## 2026-07-21 03:50:08.320Z window.error
+- message: Uncaught ReferenceError: Circle is not defined
+- source: http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784605740465
+- line: 2843
+- col: 46
+- stack: 
+    ReferenceError: Circle is not defined
+        at CadSandboxOverlay (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784605740465:2843:46)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:11596:26)
+        at updateFunctionComponent (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:14630:28)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:15972:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3680:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3705:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3739:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19818:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19190:13)
+
+## 2026-07-21 03:50:08.325Z console.error
+- text: 
+    The above error occurred in the <CadSandboxOverlay> component:
+    
+        at CadSandboxOverlay (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784605740465:2175:3)
+        at div
+        at Scr700App (http://localhost:3000/src/scr700/Scr700App.jsx?t=1784605740465:149:31)
+        at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:6401:26)
+        at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7326:3)
+        at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7265:13)
+        at BrowserRouter (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:10570:3)
+        at App
+    
+    Consider adding an error boundary to your tree to customize error handling behavior.
+    Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+## 2026-07-21 03:50:08.327Z window.error
+- message: Uncaught ReferenceError: Circle is not defined
+- source: http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0
+- line: 9176
+- col: 15
+- stack: 
+    ReferenceError: Circle is not defined
+        at CadSandboxOverlay (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784605740465:2843:46)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:11596:26)
+        at updateFunctionComponent (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:14630:28)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:15972:22)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19806:22)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19190:13)
+        at renderRootSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19169:15)
+        at recoverFromConcurrentError (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:18786:28)
+        at performSyncWorkOnRoot (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:18932:28)
+
+## 2026-07-21 03:50:08.632Z root.empty
+- url: http://localhost:3000/
+
+## 2026-07-21 04:07:42.149Z console.error
+- text: [vite] Failed to reload /src/scr700/CadSandboxViewer3D.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 04:07:47.821Z console.error
+- text: [vite] Failed to reload /src/scr700/CadSandboxViewer3D.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 04:07:56.312Z console.error
+- text: [vite] Failed to reload /src/scr700/CadSandboxViewer3D.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 04:08:05.395Z console.error
+- text: [vite] Failed to reload /src/scr700/CadSandboxViewer3D.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 04:08:20.749Z console.error
+- text: [vite] Failed to reload /src/scr700/CadSandboxViewer3D.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 04:15:39.855Z console.error
+- text: [vite] Failed to reload /src/scr700/CadSandboxViewer3D.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 04:15:52.577Z console.error
+- text: [vite] Failed to reload /src/scr700/CadSandboxViewer3D.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 04:16:11.811Z console.error
+- text: [vite] Failed to reload /src/scr700/CadSandboxViewer3D.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 04:16:28.983Z console.error
+- text: [vite] Failed to reload /src/scr700/CadSandboxViewer3D.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 04:43:01.384Z load
+- url: http://localhost:3000/
+
+## 2026-07-21 04:43:01.692Z console.warn
+- text: THREE.WARNING: Multiple instances of Three.js being imported.
+
+## 2026-07-21 04:43:03.833Z click
+- element: {"tag":"button","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-21 04:43:04.002Z console.warn
+- text: THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+
+## 2026-07-21 04:43:06.442Z window.error
+- message: Uncaught ReferenceError: LabelConnectorLine is not defined
+- source: http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239
+- line: 267
+- col: 111
+- stack: 
+    ReferenceError: LabelConnectorLine is not defined
+        at GlbNode (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:267:111)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:5898:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:9381:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10364:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10595:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10620:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10652:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:14210:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13674:20)
+        at workLoopConcurrent (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13665:13)
+
+## 2026-07-21 04:43:06.459Z window.error
+- message: Uncaught ReferenceError: LabelConnectorLine is not defined
+- source: http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239
+- line: 267
+- col: 111
+- stack: 
+    ReferenceError: LabelConnectorLine is not defined
+        at GlbNode (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:267:111)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:5898:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:9381:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10364:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10595:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10620:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10652:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:14210:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13674:20)
+        at workLoopConcurrent (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13665:13)
+
+## 2026-07-21 04:43:06.469Z window.error
+- message: Uncaught ReferenceError: LabelConnectorLine is not defined
+- source: http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239
+- line: 267
+- col: 111
+- stack: 
+    ReferenceError: LabelConnectorLine is not defined
+        at GlbNode (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:267:111)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:5898:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:9381:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10364:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10595:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10620:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10652:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:14210:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13674:20)
+        at workLoopConcurrent (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13665:13)
+
+## 2026-07-21 04:43:06.502Z window.error
+- message: Uncaught ReferenceError: LabelConnectorLine is not defined
+- source: http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239
+- line: 267
+- col: 111
+- stack: 
+    ReferenceError: LabelConnectorLine is not defined
+        at GlbNode (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:267:111)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:5898:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:9381:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10364:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10595:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10620:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10652:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:14210:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13674:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13614:13)
+
+## 2026-07-21 04:43:06.520Z window.error
+- message: Uncaught ReferenceError: LabelConnectorLine is not defined
+- source: http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239
+- line: 267
+- col: 111
+- stack: 
+    ReferenceError: LabelConnectorLine is not defined
+        at GlbNode (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:267:111)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:5898:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:9381:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10364:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10595:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10620:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10652:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:14210:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13674:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13614:13)
+
+## 2026-07-21 04:43:06.525Z window.error
+- message: Uncaught ReferenceError: LabelConnectorLine is not defined
+- source: http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239
+- line: 267
+- col: 111
+- stack: 
+    ReferenceError: LabelConnectorLine is not defined
+        at GlbNode (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:267:111)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:5898:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:9381:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10364:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10595:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10620:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10652:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:14210:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13674:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13614:13)
+
+## 2026-07-21 04:43:06.527Z console.error
+- text: 
+    The above error occurred in the <GlbNode> component:
+    
+        at GlbNode (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:147:20)
+        at Suspense
+        at TwinScene (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:717:3)
+        at Suspense
+        at ErrorBoundary (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:16095:5)
+        at FiberProvider (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:17715:21)
+        at Provider (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:17382:3)
+    
+    React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+
+## 2026-07-21 04:43:06.527Z console.error
+- text: 
+    The above error occurred in the <GlbNode> component:
+    
+        at GlbNode (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:147:20)
+        at Suspense
+        at TwinScene (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:717:3)
+        at Suspense
+        at ErrorBoundary (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:16095:5)
+        at FiberProvider (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:17715:21)
+        at Provider (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:17382:3)
+    
+    React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+
+## 2026-07-21 04:43:06.528Z console.error
+- text: 
+    The above error occurred in the <GlbNode> component:
+    
+        at GlbNode (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:147:20)
+        at Suspense
+        at TwinScene (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:717:3)
+        at Suspense
+        at ErrorBoundary (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:16095:5)
+        at FiberProvider (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:17715:21)
+        at Provider (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:17382:3)
+    
+    React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+
+## 2026-07-21 04:43:06.535Z window.error
+- message: Uncaught ReferenceError: LabelConnectorLine is not defined
+- source: http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0
+- line: 17980
+- col: 15
+- stack: 
+    ReferenceError: LabelConnectorLine is not defined
+        at GlbNode (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:267:111)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:5898:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:9381:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10364:22)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:14198:22)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13674:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13614:13)
+        at renderRootSync (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13593:15)
+        at recoverFromConcurrentError (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13180:28)
+        at performConcurrentWorkOnRoot (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13128:30)
+
+## 2026-07-21 04:43:06.542Z window.error
+- message: Uncaught ReferenceError: LabelConnectorLine is not defined
+- source: http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0
+- line: 17980
+- col: 15
+- stack: 
+    ReferenceError: LabelConnectorLine is not defined
+        at GlbNode (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:267:111)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:5898:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:9381:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10364:22)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:14198:22)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13674:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13614:13)
+        at renderRootSync (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13593:15)
+        at recoverFromConcurrentError (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13180:28)
+        at performConcurrentWorkOnRoot (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13128:30)
+
+## 2026-07-21 04:43:06.545Z console.error
+- text: 
+    The above error occurred in the <ForwardRef(Canvas)> component:
+    
+        at Canvas (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:17940:3)
+        at FiberProvider (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:17715:21)
+        at CanvasWrapper
+        at div
+        at div
+        at MotionComponent (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:946:40)
+        at PresenceChild (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:122:24)
+        at AnimatePresence (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:211:26)
+        at CadSandboxOverlay (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:3894:3)
+        at div
+        at Scr700App (http://localhost:3000/src/scr700/Scr700App.jsx?t=1784608965239:149:31)
+        at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:6401:26)
+        at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7326:3)
+        at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7265:13)
+        at BrowserRouter (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:10570:3)
+        at ErrorBoundary (http://localhost:3000/src/App.jsx?t=1784608965239:8:5)
+        at App
+    
+    React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+
+## 2026-07-21 04:43:06.545Z console.error
+- text: 
+    React ErrorBoundary caught error: ReferenceError: LabelConnectorLine is not defined
+        at GlbNode (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:267:111)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:5898:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:9381:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:10364:22)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:14198:22)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13674:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13614:13)
+        at renderRootSync (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13593:15)
+        at recoverFromConcurrentError (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13180:28)
+        at performConcurrentWorkOnRoot (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:13128:30) {"componentStack":"\n    at Canvas (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:17940:3)\n    at FiberProvider (http://localhost:3000/node_modules/.vite/deps/chunk-OUBLWYSL.js?v=216352c0:17715:21)\n    at CanvasWrapper\n    at div\n    at div\n    at MotionComponent (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:946:40)\n    at PresenceChild (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:122:24)\n    at AnimatePresence (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:211:26)\n    at CadSandboxOverlay (http://localhost:3000/src/scr700/CadSandboxViewer3D.jsx?t=1784608965239:3894:3)\n    at div\n    at Scr700App (http://localhost:3000/src/scr700/Scr700App.jsx?t=1784608965239:149:31)\n    at Rendere...
+
+## 2026-07-21 04:43:39.210Z click
+- element: {"tag":"div","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":"⚡Restableciendo Entorno 3DReferenceError: LabelConnectorLine is not defined🔄 Recargar Vista"}
+
+## 2026-07-21 04:43:40.724Z click
+- element: {"tag":"button","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":"🔄 Recargar Vista"}
+
+## 2026-07-21 04:46:41.839Z console.error
+- text: [vite] Failed to reload /src/scr700/CadSandboxViewer3D.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 04:46:53.567Z console.error
+- text: [vite] Failed to reload /src/scr700/CadSandboxViewer3D.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 04:47:05.933Z console.error
+- text: [vite] Failed to reload /src/scr700/CadSandboxViewer3D.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 04:51:30.760Z window.error
+- message: Uncaught ReferenceError: TopSelect is not defined
+- source: http://localhost:3000/src/scr700/Scr700App.jsx?t=1784609490393
+- line: 1019
+- col: 34
+- stack: 
+    ReferenceError: TopSelect is not defined
+        at Scr700App (http://localhost:3000/src/scr700/Scr700App.jsx?t=1784609490393:1019:34)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:11596:26)
+        at updateFunctionComponent (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:14630:28)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:15972:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3680:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3705:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3739:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19818:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19190:13)
+
+## 2026-07-21 04:51:30.764Z window.error
+- message: Uncaught ReferenceError: TopSelect is not defined
+- source: http://localhost:3000/src/scr700/Scr700App.jsx?t=1784609490393
+- line: 1019
+- col: 34
+- stack: 
+    ReferenceError: TopSelect is not defined
+        at Scr700App (http://localhost:3000/src/scr700/Scr700App.jsx?t=1784609490393:1019:34)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:11596:26)
+        at updateFunctionComponent (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:14630:28)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:15972:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3680:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3705:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3739:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19818:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19190:13)
+
+## 2026-07-21 04:51:30.770Z console.error
+- text: 
+    The above error occurred in the <Scr700App> component:
+    
+        at Scr700App (http://localhost:3000/src/scr700/Scr700App.jsx?t=1784609490393:408:31)
+        at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:6401:26)
+        at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7326:3)
+        at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7265:13)
+        at BrowserRouter (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:10570:3)
+        at ErrorBoundary (http://localhost:3000/src/App.jsx?t=1784606075866:8:5)
+        at App
+    
+    React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+
+## 2026-07-21 04:51:30.771Z console.error
+- text: 
+    React ErrorBoundary caught error: ReferenceError: TopSelect is not defined
+        at Scr700App (http://localhost:3000/src/scr700/Scr700App.jsx?t=1784609490393:1019:34)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:11596:26)
+        at updateFunctionComponent (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:14630:28)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:15972:22)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19806:22)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19190:13)
+        at renderRootSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19169:15)
+        at recoverFromConcurrentError (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:18786:28)
+        at performSyncWorkOnRoot (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:18932:28) {"componentStack":"\n    at Scr700App (http://localhost:3000/src/scr700/Scr700App.jsx?t=1784609490393:408:31)\n    at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:6401:26)\n    at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7326:3)\n    at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7265:13)\n    at BrowserRouter (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:10570:3)\n    at ErrorBoundary (http://localhost:3000/src/App.jsx?t=1784606075866:8:5)\n    at App"}
+
+## 2026-07-21 05:02:12.019Z console.error
+- text: [vite] Failed to reload /src/scr700/views.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 05:03:59.636Z window.error
+- message: Uncaught ReferenceError: Server is not defined
+- source: http://localhost:3000/src/scr700/views.jsx?t=1784610238931
+- line: 6621
+- col: 42
+- stack: 
+    ReferenceError: Server is not defined
+        at HomeHeroView (http://localhost:3000/src/scr700/views.jsx?t=1784610238931:6621:42)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:11596:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:14974:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:15962:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3680:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3705:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3739:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19818:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19190:13)
+
+## 2026-07-21 05:03:59.642Z window.error
+- message: Uncaught ReferenceError: Server is not defined
+- source: http://localhost:3000/src/scr700/views.jsx?t=1784610238931
+- line: 6621
+- col: 42
+- stack: 
+    ReferenceError: Server is not defined
+        at HomeHeroView (http://localhost:3000/src/scr700/views.jsx?t=1784610238931:6621:42)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:11596:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:14974:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:15962:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3680:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3705:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3739:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19818:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19190:13)
+
+## 2026-07-21 05:03:59.645Z console.error
+- text: 
+    The above error occurred in the <HomeHeroView> component:
+    
+        at HomeHeroView (http://localhost:3000/src/scr700/views.jsx?t=1784610238931:6509:32)
+        at div
+        at MotionComponent (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:946:40)
+        at PresenceChild (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:122:24)
+        at AnimatePresence (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:211:26)
+        at main
+        at div
+        at div
+        at Scr700App (http://localhost:3000/src/scr700/Scr700App.jsx?t=1784609746255:411:31)
+        at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:6401:26)
+        at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7326:3)
+        at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7265:13)
+        at BrowserRouter (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:10570:3)
+        at ErrorBoundary (http://localhost:3000/src/App.jsx?t=1784606075866:8:5)
+        at App
+    
+    React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+
+## 2026-07-21 05:03:59.646Z console.error
+- text: 
+    React ErrorBoundary caught error: ReferenceError: Server is not defined
+        at HomeHeroView (http://localhost:3000/src/scr700/views.jsx?t=1784610238931:6621:42)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:11596:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:14974:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:15962:22)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19806:22)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19190:13)
+        at renderRootSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19169:15)
+        at recoverFromConcurrentError (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:18786:28)
+        at performSyncWorkOnRoot (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:18932:28) {"componentStack":"\n    at HomeHeroView (http://localhost:3000/src/scr700/views.jsx?t=1784610238931:6509:32)\n    at div\n    at MotionComponent (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:946:40)\n    at PresenceChild (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:122:24)\n    at AnimatePresence (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:211:26)\n    at main\n    at div\n    at div\n    at Scr700App (http://localhost:3000/src/scr700/Scr700App.jsx?t=1784609746255:411:31)\n    at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:6401:26)\n    at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7326:3)\n    at Router (http://localhost:3000/node_modules/.vite/deps/r...
+
+## 2026-07-21 05:05:30.241Z load
+- url: http://localhost:3000/
+
+## 2026-07-21 05:05:30.354Z console.warn
+- text: THREE.WARNING: Multiple instances of Three.js being imported.
+
+## 2026-07-21 05:05:32.744Z click
+- element: {"tag":"button","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":""}
+
+## 2026-07-21 05:06:53.363Z click
+- element: {"tag":"button","role":null,"ariaLabel":null,"name":null,"type":null,"id":null,"placeholder":null,"label":null,"value":null,"valueLength":0,"text":"Ingresar al Sistema "}
+
+## 2026-07-21 05:07:00.214Z console.error
+- text: [vite] Failed to reload /src/scr700/views.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 05:07:00.214Z console.error
+- text: [vite] Failed to reload /src/scr700/views.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 05:07:11.297Z console.error
+- text: [vite] Failed to reload /src/scr700/views.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 05:07:11.292Z console.error
+- text: [vite] Failed to reload /src/scr700/views.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 05:07:20.289Z console.error
+- text: [vite] Failed to reload /src/scr700/views.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 05:07:20.289Z console.error
+- text: [vite] Failed to reload /src/scr700/views.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 05:07:32.448Z console.error
+- text: [vite] Failed to reload /src/scr700/views.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
+## 2026-07-21 05:07:32.447Z console.error
+- text: [vite] Failed to reload /src/scr700/views.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+
