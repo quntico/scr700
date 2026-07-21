@@ -4819,3 +4819,75 @@
 ## 2026-07-21 05:07:32.447Z console.error
 - text: [vite] Failed to reload /src/scr700/views.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
 
+## 2026-07-21 05:17:59.129Z window.error
+- message: Uncaught ReferenceError: useRef is not defined
+- source: http://localhost:3000/src/scr700/views.jsx?t=1784611078639
+- line: 6513
+- col: 20
+- stack: 
+    ReferenceError: useRef is not defined
+        at HomeHeroView (http://localhost:3000/src/scr700/views.jsx?t=1784611078639:6513:20)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:11596:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:14974:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:15962:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3680:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3705:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3739:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19818:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19190:13)
+
+## 2026-07-21 05:17:59.134Z window.error
+- message: Uncaught ReferenceError: useRef is not defined
+- source: http://localhost:3000/src/scr700/views.jsx?t=1784611078639
+- line: 6513
+- col: 20
+- stack: 
+    ReferenceError: useRef is not defined
+        at HomeHeroView (http://localhost:3000/src/scr700/views.jsx?t=1784611078639:6513:20)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:11596:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:14974:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:15962:22)
+        at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3680:22)
+        at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3705:24)
+        at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:3739:39)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19818:15)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19190:13)
+
+## 2026-07-21 05:17:59.137Z console.error
+- text: 
+    The above error occurred in the <HomeHeroView> component:
+    
+        at HomeHeroView (http://localhost:3000/src/scr700/views.jsx?t=1784611078639:6510:32)
+        at div
+        at MotionComponent (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:946:40)
+        at PresenceChild (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:122:24)
+        at AnimatePresence (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:211:26)
+        at main
+        at div
+        at div
+        at Scr700App (http://localhost:3000/src/scr700/Scr700App.jsx?t=1784610799137:411:31)
+        at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:6401:26)
+        at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7326:3)
+        at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7265:13)
+        at BrowserRouter (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:10570:3)
+        at ErrorBoundary (http://localhost:3000/src/App.jsx?t=1784606075866:8:5)
+        at App
+    
+    React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+
+## 2026-07-21 05:17:59.138Z console.error
+- text: 
+    React ErrorBoundary caught error: ReferenceError: useRef is not defined
+        at HomeHeroView (http://localhost:3000/src/scr700/views.jsx?t=1784611078639:6513:20)
+        at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:11596:26)
+        at mountIndeterminateComponent (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:14974:21)
+        at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:15962:22)
+        at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19806:22)
+        at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19251:20)
+        at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19190:13)
+        at renderRootSync (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:19169:15)
+        at recoverFromConcurrentError (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:18786:28)
+        at performSyncWorkOnRoot (http://localhost:3000/node_modules/.vite/deps/chunk-BVQ4LMF2.js?v=216352c0:18932:28) {"componentStack":"\n    at HomeHeroView (http://localhost:3000/src/scr700/views.jsx?t=1784611078639:6510:32)\n    at div\n    at MotionComponent (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:946:40)\n    at PresenceChild (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:122:24)\n    at AnimatePresence (http://localhost:3000/node_modules/.vite/deps/framer-motion.js?v=069aecc3:211:26)\n    at main\n    at div\n    at div\n    at Scr700App (http://localhost:3000/src/scr700/Scr700App.jsx?t=1784610799137:411:31)\n    at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:6401:26)\n    at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=069aecc3:7326:3)\n    at Router (http://localhost:3000/node_modules/.vite/deps/r...
+

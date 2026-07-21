@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ResponsiveContainer, LineChart, Line, AreaChart, Area, BarChart, Bar,
@@ -2901,8 +2901,9 @@ function MatrixDecodeLine({ text, isLast, delay = 0 }) {
 /* ---------------- Home Hero Landing View ---------------- */
 export function HomeHeroView({ editorMode, heroConfig, onSaveHeroConfig, onNavigate }) {
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const videoRef = useRef(null);
 
-  const defaultVideo = 'https://assets.mixkit.co/videos/preview/mixkit-robotic-arm-in-a-factory-43251-large.mp4';
+  const defaultVideo = 'https://assets.mixkit.co/videos/preview/mixkit-robotic-arm-in-a-factory-43251-small.mp4';
 
   const videoUrl = heroConfig?.videoUrl || defaultVideo;
   const videoOpacity = heroConfig?.videoOpacity !== undefined ? heroConfig.videoOpacity : 0.4;
@@ -2912,6 +2913,12 @@ export function HomeHeroView({ editorMode, heroConfig, onSaveHeroConfig, onNavig
 
   const lines = title.split('\n');
 
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  }, [videoUrl]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -2919,10 +2926,11 @@ export function HomeHeroView({ editorMode, heroConfig, onSaveHeroConfig, onNavig
       transition={{ duration: 0.3 }}
       className="relative min-h-[calc(100vh-130px)] flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-800 bg-[#05080d]"
     >
-      {/* Hero Video Background - Loads & Plays Immediately */}
+      {/* Hero Video Background - Ultra Fast Instant Playback */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
         {videoUrl ? (
           <video
+            ref={videoRef}
             key={videoUrl}
             src={videoUrl}
             autoPlay
@@ -2930,6 +2938,8 @@ export function HomeHeroView({ editorMode, heroConfig, onSaveHeroConfig, onNavig
             muted
             playsInline
             preload="auto"
+            onCanPlay={(e) => e.target.play().catch(() => {})}
+            onLoadedData={(e) => e.target.play().catch(() => {})}
             style={{ opacity: videoOpacity }}
             className="w-full h-full object-cover filter contrast-125 saturate-110 scale-105"
           />
