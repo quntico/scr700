@@ -188,7 +188,7 @@ function PlantSelectorDropdown({ plant, setPlant, line, setLine, shift, setShift
 
 export default function Scr700App() {
   const [active, setActive] = useState('home');
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [mobileNav, setMobileNav] = useState(false);
   const [machine, setMachine] = useState(null);
   const [plant, setPlant] = useState(PLANTS[0].name);

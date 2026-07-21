@@ -3031,39 +3031,6 @@ export function HomeHeroView({ editorMode, heroConfig, onSaveHeroConfig, onNavig
         </motion.div>
       </div>
 
-      {/* Bottom Features Cards Bar */}
-      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 border-t border-slate-800/80 bg-[#05080d]/80 backdrop-blur-md">
-        <div 
-          onClick={() => onNavigate && onNavigate('control')}
-          className="p-3.5 rounded-xl border border-slate-800/80 bg-slate-900/40 hover:border-cyan-500/50 hover:bg-cyan-500/10 cursor-pointer transition-all group"
-        >
-          <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider mb-1">
-            <Activity size={15} /> Centro de Control
-          </div>
-          <p className="text-slate-400 text-xs leading-snug">Monitoreo en tiempo real de OEE, disponibilidad y alertas operativas de planta.</p>
-        </div>
-
-        <div 
-          onClick={() => onNavigate && onNavigate('twin')}
-          className="p-3.5 rounded-xl border border-slate-800/80 bg-slate-900/40 hover:border-cyan-500/50 hover:bg-cyan-500/10 cursor-pointer transition-all group"
-        >
-          <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider mb-1">
-            <Box size={15} /> Gemelo Digital CAD
-          </div>
-          <p className="text-slate-400 text-xs leading-snug">Modelado 3D fidedigno de estaciones de ensamble con rotación y cotas de precisión.</p>
-        </div>
-
-        <div 
-          onClick={() => onNavigate && onNavigate('ai')}
-          className="p-3.5 rounded-xl border border-slate-800/80 bg-slate-900/40 hover:border-cyan-500/50 hover:bg-cyan-500/10 cursor-pointer transition-all group"
-        >
-          <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider mb-1">
-            <Sparkles size={15} /> Inteligencia IA
-          </div>
-          <p className="text-slate-400 text-xs leading-snug">Diagnóstico prescriptivo de fallas y recomendaciones óptimas de proceso.</p>
-        </div>
-      </div>
-
       {/* Hero Editor Dialog */}
       <HeroEditorDialog
         open={showEditDialog}
