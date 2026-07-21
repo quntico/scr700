@@ -3007,28 +3007,6 @@ export function HomeHeroView({ editorMode, heroConfig, onSaveHeroConfig, onNavig
         >
           {subtitle}
         </motion.p>
-
-        {/* Action Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.45 }}
-          className="mt-10 flex flex-wrap items-center justify-center gap-4"
-        >
-          <button
-            onClick={() => onNavigate && onNavigate('control')}
-            className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold text-sm tracking-wider uppercase hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(34,211,238,0.4)]"
-          >
-            Ingresar al Sistema <ArrowRight size={16} />
-          </button>
-
-          <button
-            onClick={() => onNavigate && onNavigate('twin')}
-            className="flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-slate-900/80 border border-slate-700 text-slate-200 font-semibold text-sm tracking-wider uppercase hover:border-cyan-400 hover:text-cyan-300 hover:bg-slate-800 transition-all shadow-lg"
-          >
-            <Box size={16} className="text-cyan-400" /> Gemelo Digital 3D
-          </button>
-        </motion.div>
       </div>
 
       {/* Hero Editor Dialog */}
