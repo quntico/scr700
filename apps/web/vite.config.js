@@ -382,6 +382,8 @@ export default defineConfig({
 		},
 		allowedHosts: [
 			'.app-preview.com',
+			'.vercel.run',
+			'.v0.build',
 			'.app-preview.io',
 		],
 		fs: {
@@ -420,3 +422,4 @@ export default defineConfig({
 		}
 	}
 });
+

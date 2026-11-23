@@ -11,6 +11,7 @@ import {
 import { PLANTS, LINES, SHIFTS, ALARMS } from './data';
 import { Dot } from './ui';
 import MachinePanel from './MachinePanel';
+import CotizadorVisual from './CotizadorVisual';
 import {
   DashboardView, TwinView, MachinesView, AnalyticsView, IntelligenceView,
   ParametricsView, AlarmsView, MaintenanceView, EnergyView, ReportsView,
@@ -25,6 +26,7 @@ const NAV = [
   { id: 'control', label: 'Centro de Control', icon: LayoutDashboard },
   { id: 'plants', label: 'Plantas', icon: Factory },
   { id: 'machines', label: 'Máquinas', icon: Cpu },
+  { id: 'cotizador-visual', label: 'Cotizador visual', icon: Calculator },
   { id: 'twin', label: 'Gemelo Digital', icon: Box },
   { id: 'production', label: 'Producción', icon: PackageCheck },
   { id: 'analytics', label: 'Analítica', icon: LineChart },
@@ -187,7 +189,7 @@ function PlantSelectorDropdown({ plant, setPlant, line, setLine, shift, setShift
 }
 
 export default function Scr700App() {
-  const [active, setActive] = useState('home');
+  const [active, setActive] = useState(() => window.location.hash === '#cotizador-visual' ? 'cotizador-visual' : 'home');
   const [collapsed, setCollapsed] = useState(true);
   const [mobileNav, setMobileNav] = useState(false);
   const [machine, setMachine] = useState(null);
@@ -417,6 +419,7 @@ export default function Scr700App() {
             onNavigate={(targetView) => setActive(targetView)}
           />
         );
+      case 'cotizador-visual': return <CotizadorVisual />;
       case 'control': 
         return (
           <DashboardView 
@@ -634,9 +637,9 @@ export default function Scr700App() {
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-y-auto p-4">
+        <main className={active === 'cotizador-visual' ? 'flex-1 min-h-0 overflow-hidden' : 'flex-1 overflow-y-auto p-4'}>
           <AnimatePresence mode="wait">
-            <motion.div key={active} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
+            <motion.div key={active} className={active === 'cotizador-visual' ? 'h-full' : undefined} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
               {render()}
             </motion.div>
           </AnimatePresence>
@@ -975,3 +978,4 @@ function LogoEditorDialog({ open, onClose, logoDark, logoLight, logoSize, onSave
     </AnimatePresence>
   );
 }
+
